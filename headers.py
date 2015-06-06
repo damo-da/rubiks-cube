@@ -2,6 +2,7 @@
 
 from colors import *
 from copy import deepcopy
+from time import sleep
 
 FRONT_SIDE="front"
 BACK_SIDE="back"

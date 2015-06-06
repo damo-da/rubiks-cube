@@ -68,8 +68,10 @@ class Cube(object):
 	def resetMoves(self):
 		'''Empty moves.'''
 		self.move=""
+	
 	def getFaceUpdater(self):
-		return {"front":self.boxAt(1,0,1).xz,"left":self.boxAt(0,1,1).yz,"top":self.boxAt(0,1,2).xy}
+		return {"front":self.boxAt(1,0,1).xz,"left":self.boxAt(0,1,1).yz,"top":self.boxAt(1,1,2).xy}
+		
 	def action(self,word):
 		'''Apply algorithm to the cube.'''
 		word=word.replace("'","i")
@@ -78,6 +80,10 @@ class Cube(object):
 		
 		keys=word.split(" ")
 		for key in keys:
+			if len(key)>1:
+				key=key[0].upper()+key[1:]
+			else:
+				key=key.upper()
 			if key=="": continue
 			
 			if key=='F':
@@ -161,7 +167,7 @@ class Cube(object):
 				rotateS(self)
 				rotateS(self)
 				rotateS(self)
-			elif key=="x":
+			elif key=="X":
 				rotateRightSide(self)
 				rotateLeftSide(self)
 				rotateLeftSide(self)
@@ -169,14 +175,14 @@ class Cube(object):
 				rotateM(self)
 				rotateM(self)
 				rotateM(self)
-			elif key=="xi":
+			elif key=="Xi":
 				rotateRightSide(self)
 				rotateRightSide(self)
 				rotateRightSide(self)
 				rotateLeftSide(self)
 				rotateM(self)
 				
-			elif key=="x2":
+			elif key=="X2":
 				rotateM(self)
 				rotateM(self)
 				rotateRightSide(self)
@@ -184,7 +190,7 @@ class Cube(object):
 				rotateLeftSide(self)
 				rotateLeftSide(self)
 				
-			elif key=="y":
+			elif key=="Y":
 				rotateTopSide(self)
 				rotateBottomSide(self)
 				rotateBottomSide(self)
@@ -192,20 +198,20 @@ class Cube(object):
 				rotateE(self)
 				rotateE(self)
 				rotateE(self)
-			elif key=="yi":
+			elif key=="Yi":
 				rotateTopSide(self)
 				rotateTopSide(self)
 				rotateTopSide(self)
 				rotateBottomSide(self)
 				rotateE(self)
-			elif key=="y2":
+			elif key=="Y2":
 				rotateTopSide(self)
 				rotateTopSide(self)
 				rotateBottomSide(self)
 				rotateBottomSide(self)
 				rotateE(self)
 				rotateE(self)
-			elif key=="z":
+			elif key=="Z":
 				rotateFrontSide(self)
 				rotateFrontSide(self)
 				rotateFrontSide(self)
@@ -213,20 +219,21 @@ class Cube(object):
 				rotateS(self)
 				rotateS(self)
 				rotateS(self)
-			elif key=="zi":
+			elif key=="Zi":
 				rotateFrontSide(self)
 				rotateBackSide(self)
 				rotateBackSide(self)
 				rotateBackSide(self)
 				rotateS(self)
-			elif key=="z2":
+			elif key=="Z2":
 				rotateFrontSide(self)
 				rotateFrontSide(self)
 				rotateBackSide(self)
 				rotateBackSide(self)
 				rotateS(self)
 				rotateS(self)
-				
+			else:
+				print "unknown character : "+key
 				
 	def findAll(self,array,color):
 		'''Returns all box with color from the array.'''

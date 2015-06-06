@@ -5,57 +5,53 @@ from box import *
 Algo=Algorithm()
 import time
 
-def optimizeMoves(moves,recursion=True):
-	chars=["F","B","L","R","U","D"]
-	opps=["f",'b','l','r','u','d']
+def optimizeMoves(moves):
+	chars=["F","B","L","R","U","D","X","Y","Z","M","E","S"]
+	opps=["Fi",'Bi','Li','Ri','Ui','Di',"Xi","Yi","Zi","Mi","Ei","Si"]
 	moves=moves.replace("'","i")
-	moves=moves.replace(" ","")
-	for i in range(len(chars)):moves=moves.replace(chars[i]+"i",opps[i])
+	moves=" "+moves+" " #add space in front and last, so the spaces are not ommited
+	initial=moves
 	
+	while "  " in  moves:
+		moves=moves.replace("  ","")
+	
+	#remove 2s from the text
+	if "2" in moves:
+		for i in range(len(chars)):
+			moves=moves.replace(" {0}2 ".format(chars[i])," {0} {0} ".format(chars[i]))
+			
 	for i in range(len(chars)):
 		cor=chars[i]
 		opp=opps[i]
 		
 		#remove DDDD
-		moves=moves.replace(cor*4,"")
-		moves=moves.replace(opp*4,"")
-		
-		#change DDD to Di
-		moves=moves.replace(cor*3,opp)
-		moves=moves.replace(opp*3,cor)
-		
+		moves=moves.replace(" {0} {0} {0} {0} ".format(cor) ," ")
+		moves=moves.replace(" {0} {0} {0} {0} ".format(opp) ,"")
 		
 		#remove FFi and FiF
-		moves=moves.replace(cor+opp,"")
-		moves=moves.replace(opp+cor,"")
+		moves=moves.replace(" {0} {1} ".format(cor,opp), " ")
+		moves=moves.replace(" {1} {0} ".format(cor,opp), " ")
 		
-		#UU into U2
-		moves=moves.replace(opp*2,opp+"2")
-		moves=moves.replace(cor*2,cor+"2")
+		#change DDD to Di
+		moves=moves.replace(" {0} {0} {0} ".format(opp)," {0} ".format(cor))
+		moves=moves.replace(" {0} {0} {0} ".format(cor)," {0} ".format(opp))
 	
-	ret=""
-	index=0
-	while index<len(moves):
-		char=moves[index]
-		repeat=""
-		if index!=len(moves)-1: #check for 2
-			if moves[index+1] == "2":
-				repeat="2"
-				index += 1
+	if moves != initial:#change has been made, recursion goes now
+		moves=optimizeMoves(moves)
+	
+	#if no change, now go for adding 2s for FF,etc
+	for i in range(len(chars)):
+		cor=chars[i]
+		opp=opps[i]
 		
-		if char in opps :
-			#print chars[opps.index(char)-1]
-			char=chars[opps.index(char)]
-			if not repeat:
-				char += "i"
-		ret += char+repeat+ " "
-		index += 1
-	if recursion:
-		ret1=optimizeMoves(ret,recursion=False)
-		while not ret==ret1:
-			ret=ret1
-			ret1=optimizeMoves(ret,recursion=False)
-	return ret
+		#change FiFi and FF to F2 
+		moves=moves.replace(" {0} {0} ".format(opp), " {0}2 ".format(cor))
+		moves=moves.replace(" {0} {0} ".format(cor), " {0}2 ".format(cor))
+	
+	#trim moves
+	moves=moves.lstrip().rstrip()
+	
+	return moves
 	
 def solveTheCube(cube):
 	'''Solves the scrambled cube.
@@ -66,13 +62,16 @@ def solveTheCube(cube):
 	'''
 	ini=time.time()
 	cube.original=deepcopy(cube.boxes)
-	cube.resetMoves()
-
-	initial= time.time()
-	print "getting best solved side"
-	chooseBestSolvedSide(cube)
 	
-	print "orienting the cube"
+	cube.resetMoves()
+	initial= time.time()
+	
+	print "getting best solved side"
+	bestSide=chooseBestSolvedSide(cube)
+	
+	print "orienting the cube to %s as base"%str(bestSide)
+	orientCube(cube,bestSide)
+	FaceColor.update(cube.getFaceUpdater())
 	
 	print "getting base cross"
 	bringCrossPiecesInPositon(cube)
@@ -83,12 +82,12 @@ def solveTheCube(cube):
 	print "getting the base corner pieces in position"
 	bringBaseCornersInPosition(cube)
 	
+	
 	print "Solving second level"
 	solveSecondLevel(cube)
 	
 	print "Solving OLL cross"
 	solveOllCross(cube)
-	
 	
 	print "solving OLL plane"
 	solveOllPlane(cube)
@@ -97,22 +96,58 @@ def solveTheCube(cube):
 	print "solving PLL centre pieces"
 	solvePLLCenterPieces(cube)
 	
-	
 	print "solving PLL corner pieces"
 	solvePLLCornerPieces(cube)
 	
-	
 	print "BAAM !!!"
 	print "SOLVED in %0.2f seconds"%(time.time()-ini)
-	
-	
-	moves=cube.getMoves()
+
+	moves=cube.getMoves()	
 	cube.resetMoves()
-	
 	cube.boxes=cube.original
 	return moves
+def getCrossCellsCount(cube,side):
+	'''Returns the number of same boxes in the given side, respective to the middle color.'''
+	boxes=cube.getSide(side)
+	
+	#get the color of the centre box
+	for box in boxes:
+		if box.pos[0]==1 and box.pos[1]==1:
+			color=box.xy
+			
+	count=0	#count of the number of boxes in cross including the middle piece
+	
+	#now count the boxes of the cross that match to their boss(centre)
+	for box in boxes:
+		if box.pos[0]==1 or box.pos[1]==1:
+			if box.xy.color==color.color:
+				count += 1
+	return count
+	
 def chooseBestSolvedSide(cube):
-	cube.action("x")
+	'''Chooses the best side fit to be the base.'''
+	array=[]
+	actions=["","Xi","Xi","Xi","Z","Z2"]
+	for action in actions:
+		cube.action(action)
+		array.append([str(cube.boxAt(1,1,0).xy),getCrossCellsCount(cube,BOTTOM_SIDE)])
+			
+	highest=["green",0]
+	for item in array:
+		if item[1]>highest[1]:
+			highest=[item[0],item[1]]
+
+	return highest[0]
+	
+def orientCube(cube,side):
+	count=0
+	while not str(cube.boxAt(1,1,0).xy)==side:
+		if count >=4: break
+		count += 1
+		cube.action("Z")
+	
+	while not str(cube.boxAt(1,1,0).xy)==side:
+		cube.action("Xi")	
 	
 def solvePLLCornerPieces(cube):
 	'''Solves the 4 center pieces of top layer(PLL).
@@ -251,14 +286,8 @@ def solveOllPlane(cube):
 def getOLLCrossShape(cube):
 	'''Returns the current shape if OLL.
 	Given that F2l is complete and all top items are in the top layer.'''
-	
-	boxes=cube.getSide(TOP_SIDE)
-	solved=0
-	
-	for box in boxes:
-		if box.xy.color==FaceColor.top.color and (isinstance(box,SideBox) or isinstance(box,CenterBox)):
-			solved += 1
-	
+
+	solved=getCrossCellsCount(cube,TOP_SIDE)
 	if solved==1:
 		return "."
 	elif solved==5:
@@ -274,7 +303,6 @@ def solveOllCross(cube):
 	if shape==".":
 		cube.action(Algo.getOllPointSolver())
 	elif "-" in shape or "L" in shape:
-		
 		answer=Algo.getOllMinusOrPlusSolver(cube)
 		cube.action(answer)#solves the L in OLL
 		
@@ -282,7 +310,6 @@ def solveSecondLevel(self):
 	'''Solves the second layer.
 	Given that the base corner pieces are already in their correct position.'''
 	piecesThatCanHold=[(0,0,1),(0,2,1),(2,0,1),(2,2,1),(1,0,2),(1,2,2),(0,1,2),(2,1,2)]
-	
 	#solve the pieces that are in the top position
 	#if f2l-second phase complete:break
 	#else:
@@ -317,7 +344,7 @@ def solveSecondLevel(self):
 				if not self.isSolvedAt(side):
 					answer= Algo.getAnswerForF2lSecondLineBringBoxToTopTransformation(side)
 					self.action(answer)
-					
+				
 
 def bringCrossPiecesInPositon(self):
 	'''Brings cross pieces of base layer in position.
@@ -508,7 +535,6 @@ def bringBaseCornersInPosition(self):
 		self.action("R' U R U'")
 	assert(self.boxAt(2,2,0).hasColor(FaceColor.bottom,FaceColor.back,FaceColor.right))
 	#solved of (2,2,0)
-	
 	
 	
 	for corner in corners:

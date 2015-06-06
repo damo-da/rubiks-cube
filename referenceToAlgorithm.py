@@ -82,12 +82,12 @@ class Algorithm(object):
 	
 	def getOllMinusOrPlusSolver(self,cube):
 		'''Given that the OLL has a minus or a plus, returns the answer for solving it.'''
-		while not(cube.boxAt(2,1,2).xy.color==YELLOW.color):
+		while not(cube.boxAt(2,1,2).xy.color==FaceColor.top.color):
 			cube.action("U")
 		
-		if cube.boxAt(1,0,2).xy.color==YELLOW.color:
+		if cube.boxAt(1,0,2).xy.color==FaceColor.top.color:
 			cube.action("Ui")
-		if cube.boxAt(1,2,2).xy.color==YELLOW.color:
+		if cube.boxAt(1,2,2).xy.color==FaceColor.top.color:
 			ruleID=self.getRulesOfCategory("oll-cross-L")
 		else:
 			ruleID=self.getRulesOfCategory("oll-cross-minus")
