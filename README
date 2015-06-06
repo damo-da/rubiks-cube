@@ -1,0 +1,10 @@
+Rubik's Cube
+The most famous puzzle of the world.
+
+This app helps you generate the algorithm for solving your rubik's cube.
+
+Usuage:
+	--run main.py
+	--c.action(algorithm) would put algorithm in the cube
+	--c.solve() would produce an alogorithm in the cube
+	--c.action(c.solve()) would solve the cube
