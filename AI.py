@@ -5,6 +5,65 @@ from box import *
 Algo=Algorithm()
 import time
 
+def optimizeMoves(moves,recursion=True):
+	chars=["F","B","L","R","U","D"]
+	opps=["f",'b','l','r','u','d']
+	moves=moves.replace("'","i")
+	moves=moves.replace(" ","")
+	for i in range(len(chars)):moves=moves.replace(chars[i]+"i",opps[i])
+	
+	for i in range(len(chars)):
+		cor=chars[i]
+		opp=opps[i]
+		
+		#remove DDDD
+		moves=moves.replace(cor*4,"")
+		moves=moves.replace(opp*4,"")
+		
+		#change DDD to Di
+		moves=moves.replace(cor*3,opp)
+		moves=moves.replace(opp*3,cor)
+		
+		
+		#remove FFi and FiF
+		moves=moves.replace(cor+opp,"")
+		moves=moves.replace(opp+cor,"")
+		
+		#UU into U2
+		moves=moves.replace(opp*2,opp+"2")
+		moves=moves.replace(cor*2,cor+"2")
+	
+	ret=""
+	index=0
+	while index<len(moves):
+		char=moves[index]
+		repeat=""
+		if index!=len(moves)-1: #check for 2
+			if moves[index+1] == "2":
+				repeat="2"
+				index += 1
+		
+		if char in opps :
+			#print chars[opps.index(char)-1]
+			char=chars[opps.index(char)]
+			if not repeat:
+				char += "i"
+		ret += char+repeat+ " "
+		index += 1
+	if recursion:
+		ret1=optimizeMoves(ret,recursion=False)
+		while not ret==ret1:
+			ret=ret1
+			ret1=optimizeMoves(ret,recursion=False)
+	return ret
+	
+def z(cube):
+	print cube.move
+	move=cube.getMoves()
+	print move
+	cube.resetMoves()
+	raw_input()
+	
 def solveTheCube(cube):
 	'''Solves the scrambled cube.
 	Also returns the answer.
@@ -15,17 +74,17 @@ def solveTheCube(cube):
 	ini=time.time()
 	cube.original=deepcopy(cube.boxes)
 	cube.resetMoves()
-	
-	
+
 	initial= time.time()
 	print "getting cross of white"
 	bringCrossPiecesInPositon(cube)
 	
 	print "matching them with their respective sides"
-	solveBaseCross(cube);
+	solveBaseCross(cube)
 	
 	print "getting the corner pieces in position"
 	bringBaseCornersInPosition(cube)
+		
 	
 	print "Solving second level"
 	solveSecondLevel(cube)
@@ -34,20 +93,24 @@ def solveTheCube(cube):
 	print "Solving OLL cross"
 	solveOllCross(cube)
 	
+	
 	print "solving OLL plane"
 	solveOllPlane(cube)
+	
 	
 	print "solving PLL centre pieces"
 	solvePLLCenterPieces(cube)
 	
+	
 	print "solving PLL corner pieces"
 	solvePLLCornerPieces(cube)
+	
 	
 	print "BAAM !!!"
 	print "SOLVED in %0.2f seconds"%(time.time()-ini)
 	
 	
-	moves=cube.move
+	moves=cube.getMoves()
 	cube.resetMoves()
 	
 	cube.boxes=cube.original

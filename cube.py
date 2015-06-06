@@ -26,6 +26,8 @@ class Cube(object):
 		for i in range(count):
 			string += chars[random.randint(0,index)] + " "
 		return string
+	def getMoves(self):
+		return optimizeMoves(self.move)
 	def isSolvedAt(self,pos):
 		'''Check if a pos has its native colors, flipped properly.'''
 		box=self.boxAt(pos[0],pos[1],pos[2])
