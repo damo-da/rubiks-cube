@@ -1,0 +1,43 @@
+#Syntax: [x,y,z,side/corner/center,xz,yz,xy,]
+#consider that spaces are count. just forget spaces.
+#xy, yz, xy are either null("") or color name. not case sensitive
+#comments begin with a "#"
+#empty lines do not consider
+
+
+#Corner pieces
+0,0,0,corner,green,red,white,
+0,0,2,corner,green,red,yellow,
+2,0,0,corner,green,orange,white,
+2,0,2,corner,green,orange,yellow,
+0,2,0,corner,blue,red,white,
+0,2,2,corner,blue,red,yellow,
+2,2,0,corner,blue,orange,white,
+2,2,2,corner,blue,orange,yellow,
+
+
+
+#side pieces
+0,0,1,side,green,red,,
+0,2,1,side,blue,red,,
+2,0,1,side,green,orange,,
+2,2,1,side,blue,orange,,
+
+1,0,0,side,green,,white,
+1,0,2,side,green,,yellow,
+1,2,0,side,blue,,white,
+1,2,2,side,blue,,yellow,
+
+0,1,0,side,,red,white,
+0,1,2,side,,red,yellow,
+2,1,0,side,,orange,white,
+2,1,2,side,,orange,yellow,
+
+
+#center pieces
+1,0,1,center,green,,,
+1,2,1,center,blue,,,
+2,1,1,center,,orange,,
+0,1,1,center,,red,,
+1,1,0,center,,,white,
+1,1,2,center,,,yellow,
