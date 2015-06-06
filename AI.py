@@ -57,13 +57,6 @@ def optimizeMoves(moves,recursion=True):
 			ret1=optimizeMoves(ret,recursion=False)
 	return ret
 	
-def z(cube):
-	print cube.move
-	move=cube.getMoves()
-	print move
-	cube.resetMoves()
-	raw_input()
-	
 def solveTheCube(cube):
 	'''Solves the scrambled cube.
 	Also returns the answer.
@@ -76,19 +69,22 @@ def solveTheCube(cube):
 	cube.resetMoves()
 
 	initial= time.time()
-	print "getting cross of white"
+	print "getting best solved side"
+	chooseBestSolvedSide(cube)
+	
+	print "orienting the cube"
+	
+	print "getting base cross"
 	bringCrossPiecesInPositon(cube)
 	
 	print "matching them with their respective sides"
 	solveBaseCross(cube)
 	
-	print "getting the corner pieces in position"
+	print "getting the base corner pieces in position"
 	bringBaseCornersInPosition(cube)
-		
 	
 	print "Solving second level"
 	solveSecondLevel(cube)
-	
 	
 	print "Solving OLL cross"
 	solveOllCross(cube)
@@ -115,23 +111,25 @@ def solveTheCube(cube):
 	
 	cube.boxes=cube.original
 	return moves
-
+def chooseBestSolvedSide(cube):
+	cube.action("x")
+	
 def solvePLLCornerPieces(cube):
 	'''Solves the 4 center pieces of top layer(PLL).
 	The OLL is solved. now the PLL center pieces are solved. 
 	Remember: the pieces of corner pieces in PLL are affected.'''	
 	corners=cube.getSide(TOP_SIDE)
 	
-	#position the green,red,yellow box
-	#find green,red,yellow piece
+	#position the front-left-top box
+	#find front-left-top piece
 	for item in corners:
-		if item.hasColor(RED,GREEN):
+		if item.hasColor(FaceColor.left,FaceColor.front):
 			break
 	#positioning
 	
 	if not item.pos==(0,0,2):
 		#get the item in (2,0,2)
-		while not cube.boxAt(2,0,2).hasColor(RED,GREEN):
+		while not cube.boxAt(2,0,2).hasColor(FaceColor.left,FaceColor.front):
 			cube.action("Ri F Ri B B R Fi Ri B B R R")
 		
 		cube.action("Ui")
@@ -139,14 +137,14 @@ def solvePLLCornerPieces(cube):
 		cube.action("U")
 	#solved the piece of (0,0,2)
 	
-	while not cube.boxAt(2,0,2).xz.color==GREEN.color:
+	while not cube.boxAt(2,0,2).xz.color==FaceColor.front.color:
 		cube.action("Ri F Ri B B R Fi Ri B B R R")
 
 def solvePLLCenterPieces(cube):
 	'''Solves the 4 last remaining corner boxes of PLL.'''
 	
-	#rotate top so that green centre comes to the centre
-	while not(cube.boxAt(1,0,2).xz.color==GREEN.color):
+	#rotate top so that front comes to the centre
+	while not(cube.boxAt(1,0,2).xz.color==FaceColor.front.color):
 		cube.action("U")
 	
 	while True:
@@ -154,22 +152,22 @@ def solvePLLCenterPieces(cube):
 		left=cube.boxAt(0,1,2).yz
 		right=cube.boxAt(2,1,2).yz
 		back=cube.boxAt(1,2,2).xz
-		if left.color==RED.color and right.color==ORANGE.color:
+		if left.color==FaceColor.left.color and right.color==FaceColor.right.color:
 			break
-		elif left.color==RED.color:
-			#flip blue and orange
+		elif left.color==FaceColor.left.color:
+			#flip back and right
 			cube.action("R' U R' U' B' D B' D' B B R' B' R B R")
 			continue
-		elif right.color==ORANGE.color:
-			#flip blue and red
+		elif right.color==FaceColor.right.color:
+			#flip back and left
 			cube.action("F R U' R' U' R U R' F' R U R' U' R' F R F'")
-		elif right.color==RED.color and left.color==ORANGE.color:
-			#flip red and orange
+		elif right.color==FaceColor.left.color and left.color==FaceColor.right.color:
+			#flip left and right
 			cube.action("R U R' U' R' F R R U' R' U' R U R' F'")
-		elif right.color==RED.color and left.color==BLUE.color:
+		elif right.color==FaceColor.left.color and left.color==FaceColor.back.color:
 			#back->right, right->left, left->back
 			cube.action("R' U R' U' R' U' R' U R U R R")
-		elif right.color==BLUE.color and left.color==ORANGE.color:
+		elif right.color==FaceColor.back.color and left.color==FaceColor.right.color:
 			#back->left, left->right, right-> back
 			cube.action("R R U' R' U' R U R U R U' R ")
 		else:
@@ -190,14 +188,14 @@ def solveOllPlane(cube):
 			
 		count=0
 		for box in boxes:
-			if box.xy.color==YELLOW.color:
+			if box.xy.color==FaceColor.top.color:
 				count += 1
 		if count==4: break
 		
 		#solve if it is just plus, no other cells above
 		if count==0:
 			while True:
-				if cube.boxAt(2,0,2).yz.color==YELLOW.color and not(cube.boxAt(0,0,2).xz.color==YELLOW.color):
+				if cube.boxAt(2,0,2).yz.color==FaceColor.top.color and not(cube.boxAt(0,0,2).xz.color==FaceColor.top.color):
 					cube.action("R U Ri U R U U Ri")
 					break
 				else:
@@ -206,10 +204,10 @@ def solveOllPlane(cube):
 
 		if count==1: #my best part of OLL. only one piece at top, so bring it to the right-bottom corner
 			
-			while not (cube.boxAt(2,0,2).xy.color==YELLOW.color):
+			while not (cube.boxAt(2,0,2).xy.color==FaceColor.top.color):
 				cube.action("U")
 			
-			if cube.boxAt(0,0,2).xz.color==YELLOW.color:
+			if cube.boxAt(0,0,2).xz.color==FaceColor.top.color:
 				#the piece at its left is facing us
 				
 				cube.action("Li U R Ui L U Ri")
@@ -223,7 +221,7 @@ def solveOllPlane(cube):
 			#Section(Cross)
 			unmatched=[]
 			for box in boxes:
-				if box.xy.color==YELLOW.color:
+				if box.xy.color==FaceColor.top.color:
 					pass
 				else:
 					unmatched.append(box)
@@ -231,14 +229,14 @@ def solveOllPlane(cube):
 			yDiff=abs(unmatched[0].pos[1]-unmatched[1].pos[1])
 			if xDiff+yDiff==4:
 				#condition 2
-				while not(cube.boxAt(0,0,2).yz.color==YELLOW.color):
+				while not(cube.boxAt(0,0,2).yz.color==FaceColor.top.color):
 					cube.action("U")
 				cube.action("R' F' L' F R F' L F")
 			else:
-				while not (cube.boxAt(2,0,2).xz.color==YELLOW.color):
+				while not (cube.boxAt(2,0,2).xz.color==FaceColor.top.color):
 					cube.action("U")
 				#check if condition 1 or condition 3
-				if cube.boxAt(0,0,2).xz.color==YELLOW.color:
+				if cube.boxAt(0,0,2).xz.color==FaceColor.top.color:
 					#condition 3
 					cube.action("R R D R' U U R D' R' U U R'")
 				else:
@@ -252,13 +250,15 @@ def solveOllPlane(cube):
 
 def getOLLCrossShape(cube):
 	'''Returns the current shape if OLL.
-	Given that F2l is complete and all yellow items are in the top layer.'''
+	Given that F2l is complete and all top items are in the top layer.'''
 	
 	boxes=cube.getSide(TOP_SIDE)
 	solved=0
+	
 	for box in boxes:
-		if box.xy.color==YELLOW.color and (isinstance(box,SideBox) or isinstance(box,CenterBox)):
+		if box.xy.color==FaceColor.top.color and (isinstance(box,SideBox) or isinstance(box,CenterBox)):
 			solved += 1
+	
 	if solved==1:
 		return "."
 	elif solved==5:
@@ -290,7 +290,7 @@ def solveSecondLevel(self):
 	sides=[(0,0,1),(0,2,1),(2,0,1),(2,2,1)]
 	while True:
 		
-		pieces=self.findAllWithout(piecesThatCanHold,YELLOW)
+		pieces=self.findAllWithout(piecesThatCanHold,FaceColor.top)
 		
 		assert(len(pieces)==4);
 		i=0
@@ -307,7 +307,7 @@ def solveSecondLevel(self):
 			
 			self.action(answer)
 			
-			pieces=self.findAllWithout(piecesThatCanHold,YELLOW)
+			pieces=self.findAllWithout(piecesThatCanHold,FaceColor.top)
 			
 			i=0
 		if self.f2lSecondPhaseComplete():
@@ -325,7 +325,7 @@ def bringCrossPiecesInPositon(self):
 	while True:
 		boxes=[]
 		for	box in self.boxes:
-			if box.hasColor(WHITE) and box.getType()==SIDE_BOX:
+			if box.hasColor(FaceColor.bottom) and box.getType()==SIDE_BOX:
 				boxes.append(box)
 		
 		assert(len(boxes)==4)
@@ -339,10 +339,10 @@ def bringCrossPiecesInPositon(self):
 				pass
 			elif pos[2]==2:
 				#bring to (1,0,2)
-				while not self.boxAt(1,0,2).hasColor(WHITE):
+				while not self.boxAt(1,0,2).hasColor(FaceColor.bottom):
 					self.action("U")
 				#empty at (1,0,0)
-				while self.boxAt(1,0,0).hasColor(WHITE):
+				while self.boxAt(1,0,0).hasColor(FaceColor.bottom):
 					self.action("D")
 				self.action("F F")
 				#bring the cube from top to bottom line
@@ -372,7 +372,7 @@ def bringCrossPiecesInPositon(self):
 		for item in centers:
 			while not item.pos==(1,0,0):
 				self.action("D")
-			if not(self.boxAt(1,0,0).xy.color==WHITE.color):
+			if not(self.boxAt(1,0,0).xy.color==FaceColor.bottom.color):
 				self.action("F Di L")
 		break
 						
@@ -383,38 +383,38 @@ def solveBaseCross(self):
 	a1=self.boxAt(0,1,0).yz
 	
 
-	while not self.boxAt(0,1,0).yz.color==RED.color:
+	while not self.boxAt(0,1,0).yz.color==FaceColor.left.color:
 		self.action("D")
-	# piece 1 solved: RED matched
+	# piece 1 solved: FaceColor.left matched
 	
-	#green piece
-	if self.boxAt(1,0,0).xz.color==GREEN.color:
+	#front piece
+	if self.boxAt(1,0,0).xz.color==FaceColor.front.color:
 		pass
 	else:
-		if self.boxAt(2,1,0).yz.color==GREEN.color:
+		if self.boxAt(2,1,0).yz.color==FaceColor.front.color:
 			self.action("F F U' R R U F F")
 		else:
 			self.action("F F U' U' B B U U F F")
-	#green matched
+	#front matched
 	
-	#orange piece
-	if self.boxAt(2,1,0).yz.color==ORANGE.color:
+	#right piece
+	if self.boxAt(2,1,0).yz.color==FaceColor.right.color:
 		pass
 	else:
 		self.action("R R U' B B U R R")
-	#the blue piece is automatically correct since the others are correct
+	#the back piece is automatically correct since the others are correct
 	return
 	
 def bringBaseCornersInPosition(self):
 	'''Brings the base corners in position and also flips them correctly.'''
 	#get the corner pieces with white in them
-	corners=self.findAll(CORNER_PIECES,WHITE)
+	corners=self.findAll(CORNER_PIECES,FaceColor.bottom)
 	assert(len(corners)==4);
 	
 	
 	#piece of (0,0,0) as corner, process it
 	for corner in corners:
-		if corner.hasColor(RED,GREEN):
+		if corner.hasColor(FaceColor.left,FaceColor.front):
 			break
 	pos=corner.pos
 	if pos == (0,0,0):
@@ -437,16 +437,16 @@ def bringBaseCornersInPosition(self):
 					#lies on (2,0,0)
 					self.action("F' U F U")
 		else:
-			while not self.boxAt(0,0,2).hasColor(RED,GREEN,WHITE):
+			while not self.boxAt(0,0,2).hasColor(FaceColor.left,FaceColor.front,FaceColor.bottom):
 				self.action("U")
 			#came above the line
 			#now send it down
 		self.action("L' U' L")
-	assert(self.boxAt(0,0,0).hasColor(WHITE,GREEN,RED))
+	assert(self.boxAt(0,0,0).hasColor(FaceColor.bottom,FaceColor.front,FaceColor.left))
 	#now flip it to the right orientation
-	while not (self.boxAt(0,0,0).xy.color == WHITE.color and self.boxAt(0,0,0).hasColor(GREEN,RED)):
+	while not (self.boxAt(0,0,0).xy.color == FaceColor.bottom.color and self.boxAt(0,0,0).hasColor(FaceColor.front,FaceColor.left)):
 		self.action("L' U' L U")
-	assert(self.boxAt(0,0,0).hasColor(WHITE,GREEN,RED))
+	assert(self.boxAt(0,0,0).hasColor(FaceColor.bottom,FaceColor.front,FaceColor.left))
 	#solved of (0,0,0)
 	
 	
@@ -454,7 +454,7 @@ def bringBaseCornersInPosition(self):
 	#piece of (0,2,0) as corner, process it
 	
 	for corner in corners:
-		if corner.hasColor(RED,BLUE):
+		if corner.hasColor(FaceColor.left,FaceColor.back):
 			#print corner.pos
 			break
 	pos=corner.pos
@@ -470,22 +470,22 @@ def bringBaseCornersInPosition(self):
 				#lies on (2,0,0)
 				self.action("F' U U F")
 		else:
-			while not self.boxAt(0,2,2).hasColor(RED,BLUE,WHITE):
+			while not self.boxAt(0,2,2).hasColor(FaceColor.left,FaceColor.back,FaceColor.bottom):
 				self.action("U")
 		#came above the line
 		#now send it down
 		self.action("L U L'")
 	
-	assert(self.boxAt(0,2,0).hasColor(WHITE,RED,BLUE))
+	assert(self.boxAt(0,2,0).hasColor(FaceColor.bottom,FaceColor.left,FaceColor.back))
 	#now flip it to the right orientation
-	while not (self.boxAt(0,2,0).xy.color == WHITE.color and self.boxAt(0,2,0).hasColor(BLUE,RED)):
+	while not (self.boxAt(0,2,0).xy.color == FaceColor.bottom.color and self.boxAt(0,2,0).hasColor(FaceColor.back,FaceColor.left)):
 		self.action("L U L' U'")
 	#solved of (0,2,0)
-	assert(self.boxAt(0,2,0).hasColor(WHITE,RED,BLUE))
+	assert(self.boxAt(0,2,0).hasColor(FaceColor.bottom,FaceColor.left,FaceColor.back))
 	
 	
 	for corner in corners:
-		if corner.hasColor(ORANGE,BLUE):
+		if corner.hasColor(FaceColor.right,FaceColor.back):
 			break
 	#piece of (2,2,0) as corner, process it
 	pos=corner.pos
@@ -497,22 +497,22 @@ def bringBaseCornersInPosition(self):
 		if pos[2]==0: #lies on (2,0,0)
 			self.action("F' U' F")
 		else:
-			while not self.boxAt(2,2,2).hasColor(ORANGE,BLUE,WHITE):
+			while not self.boxAt(2,2,2).hasColor(FaceColor.right,FaceColor.back,FaceColor.bottom):
 				self.action("U")
 		#came above the line
 		#now send it down
 		self.action("R' U' R")
-	assert(self.boxAt(2,2,0).hasColor(WHITE,BLUE,ORANGE))
+	assert(self.boxAt(2,2,0).hasColor(FaceColor.bottom,FaceColor.back,FaceColor.right))
 	#now flip it to the right orientation
-	while not (self.boxAt(2,2,0).xy.color == WHITE.color and self.boxAt(2,2,0).hasColor(BLUE,ORANGE)):
+	while not (self.boxAt(2,2,0).xy.color == FaceColor.bottom.color and self.boxAt(2,2,0).hasColor(FaceColor.back,FaceColor.right)):
 		self.action("R' U R U'")
-	assert(self.boxAt(2,2,0).hasColor(WHITE,BLUE,ORANGE))
+	assert(self.boxAt(2,2,0).hasColor(FaceColor.bottom,FaceColor.back,FaceColor.right))
 	#solved of (2,2,0)
 	
 	
 	
 	for corner in corners:
-		if corner.hasColor(ORANGE,GREEN):
+		if corner.hasColor(FaceColor.right,FaceColor.front):
 			break
 	#piece of (2,0,0) as corner, process it
 	pos=corner.pos
@@ -521,14 +521,14 @@ def bringBaseCornersInPosition(self):
 		#alread on place
 		pass
 	else:
-		while not self.boxAt(2,0,2).hasColor(WHITE):
+		while not self.boxAt(2,0,2).hasColor(FaceColor.bottom):
 			self.action("U")
 		self.action("R U R'")
 	
-	assert(self.boxAt(2,0,0).hasColor(WHITE,ORANGE,GREEN))
-	while not (self.boxAt(2,0,0).xy.color == WHITE.color and self.boxAt(2,0,0).hasColor(GREEN,ORANGE)):
+	assert(self.boxAt(2,0,0).hasColor(FaceColor.bottom,FaceColor.right,FaceColor.front))
+	while not (self.boxAt(2,0,0).xy.color == FaceColor.bottom.color and self.boxAt(2,0,0).hasColor(FaceColor.front,FaceColor.right)):
 		self.action("R U R' U'")
-	assert(self.boxAt(2,0,0).hasColor(WHITE,ORANGE,GREEN))
+	assert(self.boxAt(2,0,0).hasColor(FaceColor.bottom,FaceColor.right,FaceColor.front))
 	#solved of (2,0,0)
 	return
 	

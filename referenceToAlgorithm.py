@@ -10,7 +10,7 @@ class Algorithm(object):
 		self.db=DBhandler()
 	def __init__(self):
 		self.open()
-		
+
 	def getRulesSQLFilter(self,rules):
 		'''Returns a SQL check for a list of rules.
 		[1,2,4] would returl (ruleID=1 or ruleID=2 or ruleID=4).'''
@@ -24,7 +24,7 @@ class Algorithm(object):
 		
 	def getAnswerForF2lSecondLineBringBoxToTopTransformation(self,pos):
 		'''Returns answer for the second layer solving, bringing box from second layer to top.
-		For eg, a green-red side of second layer is not solved and it lies in position (2,0,0),
+		For eg, a front-left side of second layer is not solved and it lies in position (2,0,0),
 		it returns an algorithm for bringing an item from (2,0,0) into the top layer.'''
 		ruleID=self.getRulesOfCategory("f2l-secondLineBringBoxToTop")
 		boxID=getIdFromPos(pos)
@@ -47,36 +47,32 @@ class Algorithm(object):
 	
 	def getPlaneColorSearchSQL(self,color):
 		'''Generates a color search SQL.
-		For the return string, use .format("xz") or whatever in the form you use it.'''
-		colors=[WHITE,RED,BLUE,GREEN,ORANGE,YELLOW]
+		For the return string, use .format("xz") or whatever in the form you use it.'''		
 		ret="( {0}='-1' or "
-		ret += "{0}='%s'"%str(color)+" or "
+		ret += "{0}='%s'"%FaceColor.getSideForColor(color)+" or "
+		
+		colors=FaceColor.getSidesExcludingColor(color)
 		for c in colors:
-			if color.color==c.color:
-				pass
-			else:
-				ret += "{0}='!%s'"%(str(c))
-				if c!=colors[len(colors)-1]:
-					ret +=" or "
+			ret += "{0}='!%s'"%(str(c))
+			if c!=colors[len(colors)-1]:
+				ret +=" or "
 		ret += ")"
+		
 		return ret
 		
 	def getPlaneColorSearchSQLOpposite(self,color):#accepts a color, then searches its negative, eg, yellow would give rise to {0}="!yellow"
 		'''just opposite of getPlaneColorSearchSQL.
 		SQL such that a given color is made not to exist in the database.'''
-		colors=[WHITE,RED,BLUE,GREEN,ORANGE,YELLOW]
-		colors.remove(color)
-		ret = "( not({0}='%s')"%str(color)+" and ( "
 		
+		ret = "( not({0}='%s')"%FaceColor.getSideForColor(color)+" and ( "
+		
+		colors=FaceColors.getSidesExcludingColor(color)
 		for i in range(len(colors)):
-			c=colors[i]
-			if color.color==c.color:
-				continue
-			else:
-				ret += "{0}='%s'"%(str(c))
-				if i != (len(colors)-1):
-					ret +=" or "
+			ret += "{0}='%s'"%(str(c))
+			if i != (len(colors)-1):
+				ret +=" or "
 		ret += "))"
+
 		return ret
 		
 	def getOllPointSolver(self):#solves the cross for a point in oll

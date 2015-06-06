@@ -11,17 +11,25 @@ from graphics import GUI
 c=Cube()
 graphics=GUI(c)
 print "random algorithm: "
-algo=c.randomAlgorithm(25)
-print algo
 
-print "applying scramble algorithm"
-c.action(algo)
+i=0
+while True:
+	algo=c.randomAlgorithm(100)
+	print algo
+	c.action(algo)
+	print c.solve()
+	i += 1
+	print i
+	break
 
-print "solving"
-answer=c.solve()
-print answer
+#print "applying scramble algorithm"
+#c.action(algo)
 
-print "applying answer"
-c.action(answer)
+#print "solving"
+#answer=c.solve()
+#print answer
+
+#print "applying answer"
+#c.action(answer)
 
 graphics.begin()

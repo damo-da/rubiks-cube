@@ -2,7 +2,7 @@
 Cells are also referred as pieces or boxes in this project.
 Coordinates start with 0 and end with 2.
 coordinates are currently calculated with green on front, red on left and white on bottom.
-Currently, (0,0,0) goes for the corner Cell of green, red and blue when solved.'''
+Currently, (0,0,0) goes for the corner Cell of front-left-bottom.'''
 from headers import *
 from colors import *
 		
@@ -54,9 +54,11 @@ class CornerBox(Box):
 	def __init__(self):
 		Box.__init__(self,CORNER_BOX)
 		
-		self.xy=WHITE		#the colors of the box
-		self.yz=RED
-		self.xz=GREEN
+		self.xy=FaceColor.bottom		#the colors of the box
+		self.yz=FaceColor.left
+		self.xz=FaceColor.front
+		
+		self.pos=(0,0,0)
 		
 class SideBox(Box):
 	'''A side box. has 2 faces.'''
@@ -64,8 +66,8 @@ class SideBox(Box):
 		Box.__init__(self,SIDE_BOX)
 		
 		self.xy=None
-		self.yz=RED
-		self.xz=GREEN
+		self.yz=FaceColor.left
+		self.xz=FaceColor.front
 		
 		self.pos=(0,0,1)
 		
@@ -74,7 +76,7 @@ class CenterBox(Box):
 	def __init__(self):
 		Box.__init__(self,CENTER_BOX)
 		
-		self.xz=GREEN
+		self.xz=FaceColor.front
 		self.yz=None
 		self.xy=None
 	

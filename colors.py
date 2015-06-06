@@ -1,7 +1,5 @@
 '''For representing color of the rubik's cube.'''
 from pygame.locals import Color
-__all__=['RED','BLUE','GREEN','WHITE','ORANGE','YELLOW']
-__ALL__=__all__
 
 class ColorItem(object):
 	'''WHITE,RED,BLUE,etc are all instances of this class.'''
