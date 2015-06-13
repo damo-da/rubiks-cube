@@ -39,7 +39,7 @@ def getAnswerFor(cube):
         else:
             cube.action("U");
             print "type 30";
-            cube.action("y L' R2 B R' B L U2 L' B Mi")
+            cube.action("y L' R2 B R' B L U2 L' B Mi xi")
     elif num==0:
         while not(cube.boxAt(0,0,2).xz.color==top.color and cube.boxAt(2,0,2).xz.color==top.color):
             cube.action("U");

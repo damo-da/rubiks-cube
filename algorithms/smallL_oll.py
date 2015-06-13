@@ -143,7 +143,7 @@ algos=[
                 {"pos":(2,2,2),"type":"xz"},
                 {"pos":(2,0,2),"type":"xy"}
                 ],
-             "answer":"R' U' R y' x' R U' R' F R U R'",
+             "answer":"R' U' R y' x' R U' R' F R U R' zi x",
              "type":"12"
             },
             {

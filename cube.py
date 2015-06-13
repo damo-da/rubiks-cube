@@ -28,7 +28,6 @@ class Cube(object):
     def reset(self):
         '''Reset the cube.'''
         self.boxes=loadCubeFromFile("cube.txt")
-        self.solved=deepcopy(self.boxes)
         self.resetMoves()
         
     def getMoves(self):
