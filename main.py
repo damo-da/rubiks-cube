@@ -5,9 +5,7 @@ from cube import *
 from graphics import GUI
 from time import sleep
 import sys
-'''Cube().action("R U Ri") would move the cube in R U Ri '''
-'''Cube().solve() would return answer for solving the cube:'''
-'''So by rules, Cube().action(Cube.solve()) would be Cube().reset().'''
+
 
 def fun():
 
@@ -15,25 +13,23 @@ def fun():
     #print algo;
     
     #c.action(algo);
-    #answer=c.solve()
-    #print "Solved by: "+answer
+    answer=c.solve()
+    #answer="y";
+    print "Solved by: "+answer
     
-    #c.action(answer);
+    c.action(answer);
     #c.actionRealTime(answer);
     print c.isSolved();
     print "End of Program";
 c=Cube()
-
-#algo=opposite_of("R' U' R y' x' R U' R' F R U R' zi x");
-
+c.updateFaceColors();
 graphics=GUI(c)
 c.registerGraphicsHandler(graphics)
 c.startRecording()
 c.setFunction(fun)
 
-#c.action(opposite_of(algo));
-algo="z x E S xi Fi Ei xi Li M E S Di x E Fi Ri Li zi zi z Si Mi S Fi Bi Li x Ei Si B S R Ei xi R B E y L D Si D E z Fi y M";
-#algo=opposite_of("y L' R2 B R' B L U2 L' B Mi xi");
+#algo=opposite_of("y2 R U R' y' R2 Ui E R U' R' U R' U Ei R2");
+algo="B M Ei Ri S B y y Mi S Fi z xi D y y R y B Ei B Fi E M x Bi Di Li S B Fi y zi Ei F Di Fi D z D R Di Ei Bi zi L"
 if True:
     i=0
     while True:
@@ -53,7 +49,7 @@ if True:
             raise SystemError
         c.action(answer)
         if(not c.isSolved()):
-            break;
+            
             print FaceColor.top
             print c.getSide(TOP_SIDE);
             print "";
@@ -72,9 +68,10 @@ if True:
             print "cube is not solved";
             raise SystemError;
         print "\n"
+    sys.exit();
 else:
     c.action(algo);
-    c.action(c.solve());
+    #c.action(c.solve());
     pass
-    
+ 
 graphics.begin()

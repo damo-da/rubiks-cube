@@ -307,11 +307,13 @@ def solveOLL(cube):
         
     return;
 def solvePLL(cube):
-    print "solving PLL centre pieces"
-    solvePLLCenterPieces(cube)
+    import algorithms.pll
+    answer=algorithms.pll.solve(cube)
+    cube.action(answer);
     
-    print "solving PLL corner pieces"
-    solvePLLCornerPieces(cube)
+    
+    
+    
     
 def getCrossCellsCount(cube,side):
     '''Returns the number of same boxes in the given side, respective to the middle color.'''
@@ -356,65 +358,6 @@ def orientCube(cube,side):
     while not str(cube.boxAt(1,1,0).xy)==side:
         cube.action("Xi")    
     
-def solvePLLCornerPieces(cube):
-    '''Solves the 4 center pieces of top layer(PLL).
-    The OLL is solved. now the PLL center pieces are solved. 
-    Remember: the pieces of corner pieces in PLL are affected.'''    
-    corners=cube.getSide(TOP_SIDE)
-    
-    #position the front-left-top box
-    #find front-left-top piece
-    for item in corners:
-        if item.hasColor(FaceColor.left,FaceColor.front):
-            break
-    #positioning
-    
-    if not item.pos==(0,0,2):
-        #get the item in (2,0,2)
-        while not cube.boxAt(2,0,2).hasColor(FaceColor.left,FaceColor.front):
-            cube.action("Ri F Ri B B R Fi Ri B B R R")
-        
-        cube.action("Ui")
-        cube.action("Ri F Ri B B R Fi Ri B B R R")
-        cube.action("U")
-    #solved the piece of (0,0,2)
-    
-    while not cube.boxAt(2,0,2).xz.color==FaceColor.front.color:
-        cube.action("Ri F Ri B B R Fi Ri B B R R")
-
-def solvePLLCenterPieces(cube):
-    '''Solves the 4 last remaining corner boxes of PLL.'''
-    
-    #rotate top so that front comes to the centre
-    while not(cube.boxAt(1,0,2).xz.color==FaceColor.front.color):
-        cube.action("U")
-    
-    while True:
-        #get the remaining centre pieces
-        left=cube.boxAt(0,1,2).yz
-        right=cube.boxAt(2,1,2).yz
-        back=cube.boxAt(1,2,2).xz
-        if left.color==FaceColor.left.color and right.color==FaceColor.right.color:
-            break
-        elif left.color==FaceColor.left.color:
-            #flip back and right
-            cube.action("R' U R' U' B' D B' D' B B R' B' R B R")
-            continue
-        elif right.color==FaceColor.right.color:
-            #flip back and left
-            cube.action("F R U' R' U' R U R' F' R U R' U' R' F R F'")
-        elif right.color==FaceColor.left.color and left.color==FaceColor.right.color:
-            #flip left and right
-            cube.action("R U R' U' R' F R R U' R' U' R U R' F'")
-        elif right.color==FaceColor.left.color and left.color==FaceColor.back.color:
-            #back->right, right->left, left->back
-            cube.action("R' U R' U' R' U' R' U R U R R")
-        elif right.color==FaceColor.back.color and left.color==FaceColor.right.color:
-            #back->left, left->right, right-> back
-            cube.action("R R U' R' U' R U R U R U' R ")
-        else:
-            raise SystemError("PLL ERROR")
-
 
 def solveSecondLevel(self):
     '''Solves the second layer.
