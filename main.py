@@ -17,8 +17,8 @@ def fun():
     #answer="y";
     print "Solved by: "+answer
     
-    c.action(answer);
-    #c.actionRealTime(answer);
+    #c.action(answer);
+    c.actionRealTime(answer);
     print c.isSolved();
     print "End of Program";
 c=Cube()
@@ -29,8 +29,8 @@ c.startRecording()
 c.setFunction(fun)
 
 #algo=opposite_of("y2 R U R' y' R2 Ui E R U' R' U R' U Ei R2");
-algo="B M Ei Ri S B y y Mi S Fi z xi D y y R y B Ei B Fi E M x Bi Di Li S B Fi y zi Ei F Di Fi D z D R Di Ei Bi zi L"
-if True:
+algo="F R U Ri Di L B R U"
+if False:
     i=0
     while True:
         if(not c.isSolved()):
@@ -49,7 +49,6 @@ if True:
             raise SystemError
         c.action(answer)
         if(not c.isSolved()):
-            
             print FaceColor.top
             print c.getSide(TOP_SIDE);
             print "";
@@ -72,6 +71,7 @@ if True:
 else:
     c.action(algo);
     #c.action(c.solve());
+    
     pass
  
 graphics.begin()

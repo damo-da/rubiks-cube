@@ -241,7 +241,10 @@ def getAlgoForTransition(t):
                 return algo
     return False;
 def solve(cube):
-    
+    for i in range(0,4):
+        cube.action("U");
+        if cube.isSolved():
+            return "";
     for i in range(0,4):
         count=0;
         while(count<4):

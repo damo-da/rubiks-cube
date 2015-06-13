@@ -7,12 +7,7 @@ import time
 
     
 def solveTheCube(cube):
-    '''Solves the scrambled cube.
-    Also returns the answer.
-    The method of solving: solve base cross, solve base corners, solve second layer, 
-    solve top cross, solve top plane,
-    solve center pieces of the side of top plane, colve the corner pieces of top plane and DONE!!!
-    '''
+    '''Returns the algorithm for solving the cube.'''
     cube.stopRecording()
     cube.original=copyCube(cube.boxes)
     cube.resetMoves()
