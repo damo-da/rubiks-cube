@@ -1,5 +1,5 @@
 '''This file helps to load a cube from a file'''
-
+from headers import *
 from box import *
 from colors import decodeColorFromText
 from box import *
@@ -22,11 +22,22 @@ def decode(line):
     obj.xz=decodeColorFromText(actions[4])
     obj.yz=decodeColorFromText(actions[5])
     obj.xy=decodeColorFromText(actions[6])
-    #print obj.pos
-    #print obj.yz
-    #print
+    
     return obj    
-
+def encode(box):
+    '''Encodes a box and returns the line for file storage.'''
+    encode="{x},{y},{z},{box_type},{xz},{yz},{xy},"
+    if box.getType()==SIDE_BOX:
+        box_type="side";
+    elif box.getType()==CORNER_BOX:
+        box_type="corner";
+    elif box.getType()==CENTER_BOX:
+        box_type="center";
+    else:
+        raise SystemError("invalid box type to encode(box)");
+    encode=encode.format(x=box.pos[0],y=box.pos[1],z=box.pos[2],box_type=box_type,xy=box.xy,xz=box.xz,yz=box.yz);
+    
+    return encode
 def loadCubeFromFile(fileName):
     '''Loads the cube structure from a file.
     Returns the cube itself.'''
@@ -43,6 +54,13 @@ def loadCubeFromFile(fileName):
                 if obj:
                     boxes.append(obj)
     return boxes
-
+def saveCubeToFile(cube,fileName):
+    print "saving to %s"%fileName
+    with open(fileName,'w') as f:
+        for box in cube.boxes:
+            line=encode(box)+"\n";
+            f.write(line);
+        
+    return True
 if __name__=="__main__":
     array=loadCubeFromFile()

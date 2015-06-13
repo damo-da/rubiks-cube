@@ -2,7 +2,7 @@
 
 from box import *
 from headers import *
-from loader import loadCubeFromFile
+from loader import loadCubeFromFile,saveCubeToFile
 from rotation import *
 from AI import *
 import random
@@ -10,12 +10,13 @@ from math import pi
 
 class Cube(object):
     '''The Cube Class.'''
-    def __init__(self):
+    def __init__(self,file_name="cube.txt"):
         self.reset()
+        self.boxes=self.boxes=loadCubeFromFile(file_name)
+        
         self.gui=None
         self.recording=False
         self.initialFunction=None
-        
         self.calledForPause=False;
     def getFaceColor(self):
         return FaceColor
@@ -29,9 +30,12 @@ class Cube(object):
         '''Reset the cube.'''
         self.boxes=loadCubeFromFile("cube.txt")
         self.resetMoves()
-        
+    def save(self,fileName):
+        saveCubeToFile(self,fileName);
+        print "done";
     def getMoves(self):
         return optimizeMoves(self.move)
+    
     def initialMovement(self):
         if self.initialFunction:
             self.initialFunction()
@@ -340,7 +344,6 @@ class Cube(object):
         '''Solves real time for the user. For each next move, the user presses the space key.'''
         #if self.isActionPaused():
         #self.gui.waitForUnpause();
-        #self.unpauseAction();
         keys=word.split(" ");
         for key in keys:
             try:

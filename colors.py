@@ -47,13 +47,13 @@ WHITE.setOpposite(YELLOW)
 
 def decodeColorFromText(color):
     '''Converts text and returns its instance.'''
-    color=color.upper()
-    if color.startswith('RED'): return RED
-    elif color.startswith('GREEN'): return GREEN
-    elif color.startswith('YELLOW'): return YELLOW
-    elif color.startswith('WHITE'): return WHITE
-    elif color.startswith('BLUE'): return BLUE
-    elif color.startswith('ORANGE'): return ORANGE
+    color=color.lower()
+    if color.startswith(str(RED)): return RED
+    elif color.startswith(str(GREEN)): return GREEN
+    elif color.startswith(str(YELLOW)): return YELLOW
+    elif color.startswith(str(WHITE)): return WHITE
+    elif color.startswith(str(BLUE)): return BLUE
+    elif color.startswith(str(ORANGE)): return ORANGE
     return None
 print RED.color
 if __name__=="__main__":

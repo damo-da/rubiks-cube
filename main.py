@@ -9,27 +9,29 @@ import sys
 
 def fun():
 
-    #algo=randomAlgorithm(20);
-    #print algo;
+    algo=randomAlgorithm(20);
+    print algo;
     
-    #c.action(algo);
+    c.action(algo);
     answer=c.solve()
     #answer="y";
     print "Solved by: "+answer
     
-    #c.action(answer);
     c.actionRealTime(answer);
+    #c.actionRealTime(answer);
     print c.isSolved();
+    print "HI";
     print "End of Program";
 c=Cube()
-c.updateFaceColors();
+#c.updateFaceColors();
 graphics=GUI(c)
 c.registerGraphicsHandler(graphics)
 c.startRecording()
 c.setFunction(fun)
 
+
 #algo=opposite_of("y2 R U R' y' R2 Ui E R U' R' U R' U Ei R2");
-algo="F R U Ri Di L B R U"
+algo="S M z Si D xi Di L Fi R B2 M Ri M x Bi Li zi B yi Si y Ei yi L S Bi yi xi Ei R2 D xi Bi R xi xi zi M D2 zi yi Si F S Bi Di"
 if False:
     i=0
     while True:
@@ -69,9 +71,11 @@ if False:
         print "\n"
     sys.exit();
 else:
-    c.action(algo);
-    #c.action(c.solve());
-    
+    #c.action(randomAlgorithm(50));
+    #c.actionRealTime(c.solve());
+    #c.save('saves/1');
+    #sys.exit();
     pass
  
+
 graphics.begin()
