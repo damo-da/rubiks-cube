@@ -6,12 +6,21 @@ from loader import loadCubeFromFile
 from rotation import *
 from AI import *
 import random
+from math import pi
 
 class Cube(object):
     '''The Cube Class.'''
     def __init__(self):
         self.reset()
-        
+        self.gui=None
+        self.recording=False
+        self.initialFunction=None
+    def startRecording(self):
+        self.recording=True
+    def stopRecording(self):
+        self.recording=False
+    def setFunction(self,fun):
+        self.initialFunction=fun
     def reset(self):
         '''Reset the cube.'''
         self.boxes=loadCubeFromFile("cube.txt")
@@ -28,6 +37,9 @@ class Cube(object):
         return string
     def getMoves(self):
         return optimizeMoves(self.move)
+    def initialMovement(self):
+        if self.initialFunction:
+            self.initialFunction()
     def isSolvedAt(self,pos):
         '''Check if a pos has its native colors, flipped properly.'''
         box=self.boxAt(pos[0],pos[1],pos[2])
@@ -71,6 +83,8 @@ class Cube(object):
     
     def getFaceUpdater(self):
         return {"front":self.boxAt(1,0,1).xz,"left":self.boxAt(0,1,1).yz,"top":self.boxAt(1,1,2).xy}
+    def registerGraphicsHandler(self,g):
+        self.gui=g;
         
     def action(self,word):
         '''Apply algorithm to the cube.'''
@@ -88,85 +102,148 @@ class Cube(object):
             
             if key=='F':
                 rotateFrontSide(self);
+                self.gui.rotateBoxes(self.getSide(FRONT_SIDE),(0,0,1))
             elif key=='B':
                 rotateBackSide(self);
+                self.gui.rotateBoxes(self.getSide(BACK_SIDE),(0,0,1),reverse=True)
             elif key=='L':
                 rotateLeftSide(self);
+                self.gui.rotateBoxes(self.getSide(LEFT_SIDE),(1,0,0),reverse=True)
             elif key=='R':
                 rotateRightSide(self);
+                self.gui.rotateBoxes(self.getSide(RIGHT_SIDE),(1,0,0))
             elif key=='U':
                 rotateTopSide(self);
+                self.gui.rotateBoxes(self.getSide(TOP_SIDE),(0,1,0))
             elif key=='D':
                 rotateBottomSide(self);
+                self.gui.rotateBoxes(self.getSide(BOTTOM_SIDE),(0,1,0),reverse=True)
             elif key=='Fi':
                 rotateFrontSide(self);
                 rotateFrontSide(self);
                 rotateFrontSide(self);
+                self.gui.rotateBoxes(self.getSide(FRONT_SIDE),(0,0,1),reverse=True)
             elif key=='Bi':
                 rotateBackSide(self);
                 rotateBackSide(self);
                 rotateBackSide(self);
+                self.gui.rotateBoxes(self.getSide(BACK_SIDE),(0,0,1))
             elif key=='Li':
                 rotateLeftSide(self);
                 rotateLeftSide(self);
                 rotateLeftSide(self);
+                self.gui.rotateBoxes(self.getSide(LEFT_SIDE),(1,0,0))
             elif key=='Ri':
                 rotateRightSide(self);
                 rotateRightSide(self);
                 rotateRightSide(self);
+                self.gui.rotateBoxes(self.getSide(RIGHT_SIDE),(1,0,0),reverse=True)
             elif key=='Ui':
                 rotateTopSide(self);
                 rotateTopSide(self);
                 rotateTopSide(self);
+                self.gui.rotateBoxes(self.getSide(TOP_SIDE),(0,1,0),reverse=True)
             elif key=='Di':
                 rotateBottomSide(self);
                 rotateBottomSide(self);
                 rotateBottomSide(self);
+                self.gui.rotateBoxes(self.getSide(BOTTOM_SIDE),(0,1,0))
             elif key=='F2':
                 rotateFrontSide(self);
                 rotateFrontSide(self);
+                self.gui.rotateBoxes(self.getSide(FRONT_SIDE),(0,0,1), angle=pi)
             elif key=='B2':
                 rotateBackSide(self);
                 rotateBackSide(self);
+                self.gui.rotateBoxes(self.getSide(BACK_SIDE),(0,0,1),reverse=True,angle=pi)
             elif key=='L2':
                 rotateLeftSide(self);
                 rotateLeftSide(self);
+                self.gui.rotateBoxes(self.getSide(LEFT_SIDE),(1,0,0),reverse=True,angle=pi)
             elif key=='R2':
                 rotateRightSide(self);
                 rotateRightSide(self);
+                self.gui.rotateBoxes(self.getSide(RIGHT_SIDE),(1,0,0),angle=pi)
             elif key=='U2':
                 rotateTopSide(self);
                 rotateTopSide(self);
+                self.gui.rotateBoxes(self.getSide(TOP_SIDE),(0,1,0),angle=pi)
             elif key=='D2':
                 rotateBottomSide(self);
                 rotateBottomSide(self);
+                self.gui.rotateBoxes(self.getSide(BOTTOM_SIDE),(0,1,0),reverse=True,angle=pi)
             elif key=="M":
                 rotateM(self);
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[0]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(1,0,0),reverse=True)
             elif key=="E":
                 rotateE(self)
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[2]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(0,1,0),reverse=True)
             elif key=="S":
                 rotateS(self)
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[1]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(0,0,1))
             elif key=="M2":
                 rotateM(self);
                 rotateM(self);
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[0]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(1,0,0),reverse=True,angle=pi)
             elif key=="E2":
                 rotateE(self)
                 rotateE(self)
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[2]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(0,1,0),reverse=True,angle=pi)
             elif key=="S2":
                 rotateS(self)
                 rotateS(self)
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[1]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(0,0,1),angle=pi)
             elif key=="Mi":
                 rotateM(self);
                 rotateM(self);
                 rotateM(self);
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[0]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(1,0,0))
             elif key=="Ei":
                 rotateE(self)
                 rotateE(self)
                 rotateE(self)
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[2]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(0,1,0))
             elif key=="Si":
                 rotateS(self)
                 rotateS(self)
                 rotateS(self)
+                boxes=[]
+                for box in self.boxes:
+                    if box.pos[1]==1:
+                        boxes.append(box)
+                self.gui.rotateBoxes(boxes,(0,0,1),reverse=True)
             elif key=="X":
                 rotateRightSide(self)
                 rotateLeftSide(self)
@@ -175,13 +252,14 @@ class Cube(object):
                 rotateM(self)
                 rotateM(self)
                 rotateM(self)
+                self.gui.rotateBoxes(self.boxes,(1,0,0))
             elif key=="Xi":
                 rotateRightSide(self)
                 rotateRightSide(self)
                 rotateRightSide(self)
                 rotateLeftSide(self)
                 rotateM(self)
-                
+                self.gui.rotateBoxes(self.boxes,(1,0,0),reverse=True)
             elif key=="X2":
                 rotateM(self)
                 rotateM(self)
@@ -189,7 +267,7 @@ class Cube(object):
                 rotateRightSide(self)
                 rotateLeftSide(self)
                 rotateLeftSide(self)
-                
+                self.gui.rotateBoxes(self.boxes,(1,0,0),angle=pi)
             elif key=="Y":
                 rotateTopSide(self)
                 rotateBottomSide(self)
@@ -198,12 +276,14 @@ class Cube(object):
                 rotateE(self)
                 rotateE(self)
                 rotateE(self)
+                self.gui.rotateBoxes(self.boxes,(0,1,0))
             elif key=="Yi":
                 rotateTopSide(self)
                 rotateTopSide(self)
                 rotateTopSide(self)
                 rotateBottomSide(self)
                 rotateE(self)
+                self.gui.rotateBoxes(self.boxes,(0,1,0),reverse=True)
             elif key=="Y2":
                 rotateTopSide(self)
                 rotateTopSide(self)
@@ -211,6 +291,7 @@ class Cube(object):
                 rotateBottomSide(self)
                 rotateE(self)
                 rotateE(self)
+                self.gui.rotateBoxes(self.boxes,(0,1,0),angle=pi)
             elif key=="Z":
                 rotateFrontSide(self)
                 rotateFrontSide(self)
@@ -219,12 +300,14 @@ class Cube(object):
                 rotateS(self)
                 rotateS(self)
                 rotateS(self)
+                self.gui.rotateBoxes(self.boxes,(0,0,1),reverse=True)
             elif key=="Zi":
                 rotateFrontSide(self)
                 rotateBackSide(self)
                 rotateBackSide(self)
                 rotateBackSide(self)
                 rotateS(self)
+                self.gui.rotateBoxes(self.boxes,(0,0,1))
             elif key=="Z2":
                 rotateFrontSide(self)
                 rotateFrontSide(self)
@@ -232,6 +315,7 @@ class Cube(object):
                 rotateBackSide(self)
                 rotateS(self)
                 rotateS(self)
+                self.gui.rotateBoxes(self.boxes,(0,0,1),reverse=True,angle=pi)
             else:
                 print "unknown character : "+key
                 

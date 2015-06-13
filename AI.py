@@ -4,22 +4,34 @@ from referenceToAlgorithm import Algorithm
 from box import *
 Algo=Algorithm()
 import time
-
+def copyCube(boxes):
+    ret=[]
+    for i in range(len(boxes)):
+        box=Box(boxes[i].boxType)
+        box.xz=deepcopy(boxes[i].xz)
+        box.yz=deepcopy(boxes[i].yz)
+        box.xy=deepcopy(boxes[i].xy)
+        box.pos=deepcopy(boxes[i].pos)
+        
+        box.xzBox=boxes[i].xzBox
+        box.yzBox=boxes[i].yzBox
+        box.xyBox=boxes[i].xyBox
+        ret.append(box)
+    return ret
 def optimizeMoves(moves):
     chars=["F","B","L","R","U","D","X","Y","Z","M","E","S"]
     opps=["Fi",'Bi','Li','Ri','Ui','Di',"Xi","Yi","Zi","Mi","Ei","Si"]
     moves=moves.replace("'","i")
     moves=" "+moves+" " #add space in front and last, so the spaces are not ommited
-    initial=moves
     
     while "  " in  moves:
         moves=moves.replace("  ","")
-    
+        
     #remove 2s from the text
     if "2" in moves:
         for i in range(len(chars)):
             moves=moves.replace(" {0}2 ".format(chars[i])," {0} {0} ".format(chars[i]))
-            
+    initial=moves    
     for i in range(len(chars)):
         cor=chars[i]
         opp=opps[i]
@@ -60,8 +72,9 @@ def solveTheCube(cube):
     solve top cross, solve top plane,
     solve center pieces of the side of top plane, colve the corner pieces of top plane and DONE!!!
     '''
+    cube.stopRecording()
     ini=time.time()
-    cube.original=deepcopy(cube.boxes)
+    cube.original=copyCube(cube.boxes)
     
     cube.resetMoves()
     initial= time.time()
@@ -82,7 +95,6 @@ def solveTheCube(cube):
     print "getting the base corner pieces in position"
     bringBaseCornersInPosition(cube)
     
-    
     print "Solving second level"
     solveSecondLevel(cube)
     
@@ -91,8 +103,7 @@ def solveTheCube(cube):
     
     print "solving OLL plane"
     solveOllPlane(cube)
-    
-    
+      
     print "solving PLL centre pieces"
     solvePLLCenterPieces(cube)
     
@@ -105,6 +116,7 @@ def solveTheCube(cube):
     moves=cube.getMoves()    
     cube.resetMoves()
     cube.boxes=cube.original
+    cube.startRecording()
     return moves
 def getCrossCellsCount(cube,side):
     '''Returns the number of same boxes in the given side, respective to the middle color.'''

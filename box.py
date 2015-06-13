@@ -11,6 +11,10 @@ class Box(object):
     def __init__(self,boxType):
         self.pos=(0,0,0)
         self.boxType=boxType
+
+        self.xzBox=None
+        self.xyBox=None
+        self.yzBox=None
         
     def getType(self):
         return self.boxType
@@ -57,7 +61,7 @@ class CornerBox(Box):
         self.xy=FaceColor.bottom        #the colors of the box
         self.yz=FaceColor.left
         self.xz=FaceColor.front
-        
+
         self.pos=(0,0,0)
         
 class SideBox(Box):

@@ -1,3 +1,25 @@
+[2.1.8]
+Upgraded AI for F2L
+
+[2.1.7.1]
+Bug fixes
+
+[2.1.7]
+Upgraded AI algorithms for PLL stage
+
+[2.1.6.1]
+Bug fixes
+
+[2.1.6]
+Upgraded AI algorithms for OLL stage
+
+[2.1.5]
+The final version of stp-by-step added.
+
+[2.1.4]
+-Pause while step-by-step guide added.
+-algorithms act over the cube. A visual display of the solving of cube.
+
 [2.1]
 -Added rotation support for cube algorithms
 	eg Displaying the rotation for notation "F"

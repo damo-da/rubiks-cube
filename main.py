@@ -1,3 +1,5 @@
+
+
 '''THE LAUNCHER.'''
 
 from headers import *
@@ -8,19 +10,22 @@ from graphics import GUI
 '''Cube().solve() would return answer for solving the cube:'''
 '''So by rules, Cube().action(Cube.solve()) would be Cube().reset().'''
 
+def fun():
+    print "random algorithm: "
+    algo=c.randomAlgorithm(50)
+    algo=optimizeMoves(algo)
+    c.action(algo);
+
+    print "solving"
+    answer=c.solve()
+    print "Solved by: "+answer
+    c.action(answer)
+
+print optimizeMoves("D L Li B Bi L L Di D L ")
+
 c=Cube()
 graphics=GUI(c)
-print "random algorithm: "
-i=0
-while True:
-    algo="Ri Di D B F Bi L B Fi Fi Di Fi D Bi Bi Li F L R Di Bi D D F Bi F Ri Ri B Fi L Bi Bi Di B L Li Di Di L Bi L B Li D B D Li B L"
-    print algo
-
-    #print "applying scramble algorithm"
-    c.action(algo)
-    break
-
-#print "applying answer"
-#c.action(answer)
-
+c.registerGraphicsHandler(graphics)
+c.startRecording()
+c.setFunction(fun)
 graphics.begin()
