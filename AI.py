@@ -19,13 +19,14 @@ def copyCube(boxes):
         ret.append(box)
     return ret
 def optimizeMoves(moves):
+    #print moves
     chars=["F","B","L","R","U","D","X","Y","Z","M","E","S"]
     opps=["Fi",'Bi','Li','Ri','Ui','Di',"Xi","Yi","Zi","Mi","Ei","Si"]
     moves=moves.replace("'","i")
     moves=" "+moves+" " #add space in front and last, so the spaces are not ommited
     
     while "  " in  moves:
-        moves=moves.replace("  ","")
+        moves=moves.replace("  "," ")
         
     #remove 2s from the text
     if "2" in moves:
@@ -38,7 +39,7 @@ def optimizeMoves(moves):
         
         #remove DDDD
         moves=moves.replace(" {0} {0} {0} {0} ".format(cor) ," ")
-        moves=moves.replace(" {0} {0} {0} {0} ".format(opp) ,"")
+        moves=moves.replace(" {0} {0} {0} {0} ".format(opp) ," ")
         
         #remove FFi and FiF
         moves=moves.replace(" {0} {1} ".format(cor,opp), " ")
@@ -73,51 +74,61 @@ def solveTheCube(cube):
     solve center pieces of the side of top plane, colve the corner pieces of top plane and DONE!!!
     '''
     cube.stopRecording()
-    ini=time.time()
     cube.original=copyCube(cube.boxes)
-    
     cube.resetMoves()
+    
     initial= time.time()
     
-    print "getting best solved side"
-    bestSide=chooseBestSolvedSide(cube)
-    
-    print "orienting the cube to %s as base"%str(bestSide)
-    orientCube(cube,bestSide)
-    FaceColor.update(cube.getFaceUpdater())
-    
-    print "getting base cross"
-    bringCrossPiecesInPositon(cube)
-    
-    print "matching them with their respective sides"
-    solveBaseCross(cube)
-    
-    print "getting the base corner pieces in position"
-    bringBaseCornersInPosition(cube)
-    
-    print "Solving second level"
-    solveSecondLevel(cube)
-    
-    print "Solving OLL cross"
-    solveOllCross(cube)
-    
-    print "solving OLL plane"
-    solveOllPlane(cube)
-      
-    print "solving PLL centre pieces"
-    solvePLLCenterPieces(cube)
-    
-    print "solving PLL corner pieces"
-    solvePLLCornerPieces(cube)
+    chooseBestSide(cube);
+    solveCross(cube)
+    solveF2L(cube)
+    solveOLL(cube)
+    solvePLL(cube)
     
     print "BAAM !!!"
-    print "SOLVED in %0.2f seconds"%(time.time()-ini)
+    timeTaken=time.time()-initial
+    with open("time.txt","a") as f:
+        f.write("%s\n"%timeTaken)
+    print "SOLVED in %0.2f seconds"%(timeTaken)
 
     moves=cube.getMoves()    
     cube.resetMoves()
     cube.boxes=cube.original
     cube.startRecording()
     return moves
+    
+def chooseBestSide(cube):
+    print "getting best solved side"
+    bestSide=chooseBestSolvedSide(cube)
+
+    print "orienting the cube to %s as base"%str(bestSide)
+    orientCube(cube,bestSide)
+    FaceColor.update(cube.getFaceUpdater())
+    
+def solveCross(cube):
+    print "getting base cross"
+    bringCrossPiecesInPositon(cube)
+    
+    print "matching them with their respective sides"
+    solveBaseCross(cube)
+def solveF2L(cube):
+    print "getting the base corner pieces in position"
+    bringBaseCornersInPosition(cube)
+    
+    print "Solving second level"
+    solveSecondLevel(cube)
+def solveOLL(cube):
+    print "Solving OLL cross"
+    solveOllCross(cube)
+    
+    print "solving OLL plane"
+    solveOllPlane(cube)
+def solvePLL(cube):
+    print "solving PLL centre pieces"
+    solvePLLCenterPieces(cube)
+    
+    print "solving PLL corner pieces"
+    solvePLLCornerPieces(cube)
 def getCrossCellsCount(cube,side):
     '''Returns the number of same boxes in the given side, respective to the middle color.'''
     boxes=cube.getSide(side)
@@ -414,14 +425,13 @@ def bringCrossPiecesInPositon(self):
             if not(self.boxAt(1,0,0).xy.color==FaceColor.bottom.color):
                 self.action("F Di L")
         break
-                        
+                                    
 def solveBaseCross(self):
     '''Solves the side pairs of the cross with their centre pieces.
     Given that the cross is formed and all the base pieces in the cross are of the same color.'''
     
     a1=self.boxAt(0,1,0).yz
     
-
     while not self.boxAt(0,1,0).yz.color==FaceColor.left.color:
         self.action("D")
     # piece 1 solved: FaceColor.left matched

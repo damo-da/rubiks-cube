@@ -9,29 +9,66 @@ from visual import color
 import visual
 from cube import *
 from time import sleep
+
+_GRAPHICS=None;
+_PAUSED=visual.text(text='Paused',pos=(0,2,0),align="center", depth=-0.3, color=color.red)
+_PAUSED.visible=False;
+
 class GUI(object):
+    def stopAction(self,event):
+	#if space  pressed, 
+		#stop  action in cube
+		#wait for a keyup of space key
+		#resume the action in cube
+	#if reset pressed, 
+		#delay some time
+		#reset the cube
+		#empty actions to be performed
+	#baam
+        try:
+            global _GRAPHICS;
+            cube=_GRAPHICS.cube;
+            if(event.key==" "):
+                global _PAUSED;
+                cube.pauseAction();
+                
+                
+        except:
+            raise SystemError("GRAPHICS not initialised");
+        return None;
+    def waitForUnpause(self):
+        _PAUSED.visible=True;
+        while True:
+            event=visual.scene.waitfor('keyup');
+            if event.key==" ":
+                _PAUSED.visible=False;
+                break;
+        return None;
+        
     def __init__(self,c):
         self.cube=c
         self.rendering=False
+        global _GRAPHICS;
+        _GRAPHICS=self;
 
     def init(self):
         '''Assigns boxes with their respective colorBoxes.'''
-        #self.black=visual.box(pos=(0,0,0), size=(2.9,2.9,2.9),color=color.black)
+        #self.black=visual.box(pos=(0,0,0), size=(2,2,2),color=color.black)
         for box in self.cube.boxes:
             if  box.xy:
                 pos=box.pos
                 pos=[pos[0]-1,-1.5*(abs(pos[2]-1)/(1-pos[2])),1-pos[1]]
-                size=[0.9,0.3,0.9]
+                size=[0.97,0.05,0.97]
                 box.xyBox=self.drawBox(pos,size,box.xy.color)
             if box.xz:
                 pos=box.pos
                 pos=[pos[0]-1,pos[2]-1,-1.5*(abs(pos[1]-1)/(pos[1]-1))]
-                size=[0.9,0.9,0.3]
+                size=[0.97,0.97,0.05]
                 box.xzBox=self.drawBox(pos,size,box.xz.color)
             if box.yz:
                 pos=box.pos
                 pos=[-1.5*(abs(pos[0]-1)/(1-pos[0])),pos[2]-1,1-pos[1]]
-                size=[0.3,0.9,0.9]
+                size=[0.05,0.97,0.97]
                 box.yzBox=self.drawBox(pos,size,box.yz.color)
             
     def drawBox(self,pos,size,color):
@@ -48,7 +85,7 @@ class GUI(object):
             slicedAngle=-slicedAngle
         
         for i in range(0,counts+1):
-            rate(50)
+            rate(40)
             if (i==counts):
                 slicedAngle=angle-abs(slicedAngle)*counts
                 if not reverse:
@@ -63,9 +100,10 @@ class GUI(object):
 
     def begin(self):
         self.rendering=True
-        self.cube.action("S")
         self.init();
+        visual.scene.bind('keyup',self.stopAction);
         self.cube.initialMovement()
+        
         while True:
             key=visual.scene.waitfor("keyup")
             key=key.key

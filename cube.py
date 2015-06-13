@@ -15,6 +15,8 @@ class Cube(object):
         self.gui=None
         self.recording=False
         self.initialFunction=None
+        
+        self.calledForPause=False;
     def startRecording(self):
         self.recording=True
     def stopRecording(self):
@@ -29,12 +31,12 @@ class Cube(object):
         
     def randomAlgorithm(self,count=20):
         '''Generates a random algorithm of length=count.'''
-        chars=["F","Fi","R","Ri","B","Bi","L","Li", "D", "Di"] 
+        chars=["F","Fi","R","Ri","B","Bi","L","Li", "D", "Di","x","xi","M","Mi","y","yi","z","zi","E","Ei","S","Si"] 
         string=""
         index=len(chars)-1
         for i in range(count):
             string += chars[random.randint(0,index)] + " "
-        return string
+        return optimizeMoves(string)
     def getMoves(self):
         return optimizeMoves(self.move)
     def initialMovement(self):
@@ -42,18 +44,22 @@ class Cube(object):
             self.initialFunction()
     def isSolvedAt(self,pos):
         '''Check if a pos has its native colors, flipped properly.'''
-        box=self.boxAt(pos[0],pos[1],pos[2])
-        for solved in self.solved:
-            if box.pos==solved.pos:
-                break;
-                solved=box
-        C1=str(box.xz)==str(solved.xz)
-        C2=str(box.yz)==str(solved.yz)
-        C3=str(box.xy)==str(solved.xy)
-        return ( C1 and C2 and C3)
-        #return C1
+        #get the centre piece of box adjacent sides
+        if pos[0]==0:
+            if not self.boxAt(*pos).yz.color==self.boxAt(0,1,1).yz.color: return False
+        elif pos[0]==2:
+            if not self.boxAt(*pos).yz.color==self.boxAt(2,1,1).yz.color: return False
+        if pos[1]==0:
+            if not self.boxAt(*pos).xz.color==self.boxAt(1,0,1).xz.color: return False
+        elif pos[1]==2:
+            if not self.boxAt(*pos).xz.color==self.boxAt(1,2,1).xz.color: return False
+        if pos[2]==0:
+            if not self.boxAt(*pos).xy.color==self.boxAt(1,1,0).xy.color: return False
+        elif pos[2]==2:
+            if not self.boxAt(*pos).xy.color==self.boxAt(1,1,2).xy.color: return False
+        return True
     def isSolved(self):
-        '''Chech if the cube is solved.'''
+        '''Check if the cube is solved.'''
         for box in self.boxes:
             if not self.isSolvedAt(box.pos):
                 return False
@@ -85,7 +91,12 @@ class Cube(object):
         return {"front":self.boxAt(1,0,1).xz,"left":self.boxAt(0,1,1).yz,"top":self.boxAt(1,1,2).xy}
     def registerGraphicsHandler(self,g):
         self.gui=g;
-        
+    def pauseAction(self):
+        self.calledForPause=True;
+    def unpauseAction(self):
+        self.calledForPause=False;
+    def isActionPaused(self):
+        return self.calledForPause;
     def action(self,word):
         '''Apply algorithm to the cube.'''
         word=word.replace("'","i")
@@ -93,13 +104,17 @@ class Cube(object):
         self.move += word+ " "
         
         keys=word.split(" ")
+        
+        
         for key in keys:
             if len(key)>1:
                 key=key[0].upper()+key[1:]
             else:
                 key=key.upper()
             if key=="": continue
-            
+            if self.isActionPaused():
+                self.gui.waitForUnpause();
+                self.unpauseAction();
             if key=='F':
                 rotateFrontSide(self);
                 self.gui.rotateBoxes(self.getSide(FRONT_SIDE),(0,0,1))
@@ -318,6 +333,7 @@ class Cube(object):
                 self.gui.rotateBoxes(self.boxes,(0,0,1),reverse=True,angle=pi)
             else:
                 print "unknown character : "+key
+                raise SystemError
                 
     def findAll(self,array,color):
         '''Returns all box with color from the array.'''
