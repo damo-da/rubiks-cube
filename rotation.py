@@ -217,7 +217,7 @@ def rotateM(self):
                 a=deepcopy(piece.xz)
                 piece.xz=deepcopy(piece.xy)
                 piece.xy=deepcopy(a)
-    FaceColor.update(self.getFaceUpdater())
+    self.updateFaceColors()
                 
 def rotateE(self):
     pieces=self.boxes
@@ -253,7 +253,7 @@ def rotateE(self):
                 a=deepcopy(piece.xz)
                 piece.xz=deepcopy(piece.yz)
                 piece.yz=deepcopy(a)
-    FaceColor.update(self.getFaceUpdater())
+    self.updateFaceColors()
 def rotateS(self):
     pieces=self.boxes
     index=0
@@ -287,7 +287,7 @@ def rotateS(self):
                 a=deepcopy(piece.xy)
                 piece.xy=deepcopy(piece.yz)
                 piece.yz=deepcopy(a)
-    FaceColor.update(self.getFaceUpdater())
+    self.updateFaceColors()
         
 def rotateBottomSide(self):
     pieces=self.boxes

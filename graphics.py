@@ -11,8 +11,9 @@ from cube import *
 from time import sleep
 
 _GRAPHICS=None;
-_PAUSED=visual.text(text='Paused',pos=(0,2,0),align="center", depth=-0.3, color=color.red)
+_PAUSED=visual.text(text='-',pos=(0,2,0),align="center", depth=-0.3, color=color.red)
 _PAUSED.visible=False;
+_FPS=70
 
 class GUI(object):
     def stopAction(self,event):
@@ -76,7 +77,9 @@ class GUI(object):
         return visual.box(pos=pos,size=size,color=color)
     def rotateBoxes(self,boxes,direction,reverse=False,angle=None):
         if not self.rendering: return None
-        if not self.cube.recording: return None
+        if not self.cube.recording:
+            return None
+
         if not angle: angle=pi/2
         slicedAngle=0.07
         counts=float(angle)/slicedAngle
@@ -85,7 +88,8 @@ class GUI(object):
             slicedAngle=-slicedAngle
         
         for i in range(0,counts+1):
-            rate(30)
+            global _FPS;
+            rate(_FPS)
             if (i==counts):
                 slicedAngle=angle-abs(slicedAngle)*counts
                 if not reverse:

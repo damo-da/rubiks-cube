@@ -4,67 +4,7 @@ from referenceToAlgorithm import Algorithm
 from box import *
 Algo=Algorithm()
 import time
-def copyCube(boxes):
-    ret=[]
-    for i in range(len(boxes)):
-        box=Box(boxes[i].boxType)
-        box.xz=deepcopy(boxes[i].xz)
-        box.yz=deepcopy(boxes[i].yz)
-        box.xy=deepcopy(boxes[i].xy)
-        box.pos=deepcopy(boxes[i].pos)
-        
-        box.xzBox=boxes[i].xzBox
-        box.yzBox=boxes[i].yzBox
-        box.xyBox=boxes[i].xyBox
-        ret.append(box)
-    return ret
-def optimizeMoves(moves):
-    #print moves
-    chars=["F","B","L","R","U","D","X","Y","Z","M","E","S"]
-    opps=["Fi",'Bi','Li','Ri','Ui','Di',"Xi","Yi","Zi","Mi","Ei","Si"]
-    moves=moves.replace("'","i")
-    moves=" "+moves+" " #add space in front and last, so the spaces are not ommited
-    
-    while "  " in  moves:
-        moves=moves.replace("  "," ")
-        
-    #remove 2s from the text
-    if "2" in moves:
-        for i in range(len(chars)):
-            moves=moves.replace(" {0}2 ".format(chars[i])," {0} {0} ".format(chars[i]))
-    initial=moves    
-    for i in range(len(chars)):
-        cor=chars[i]
-        opp=opps[i]
-        
-        #remove DDDD
-        moves=moves.replace(" {0} {0} {0} {0} ".format(cor) ," ")
-        moves=moves.replace(" {0} {0} {0} {0} ".format(opp) ," ")
-        
-        #remove FFi and FiF
-        moves=moves.replace(" {0} {1} ".format(cor,opp), " ")
-        moves=moves.replace(" {1} {0} ".format(cor,opp), " ")
-        
-        #change DDD to Di
-        moves=moves.replace(" {0} {0} {0} ".format(opp)," {0} ".format(cor))
-        moves=moves.replace(" {0} {0} {0} ".format(cor)," {0} ".format(opp))
-    
-    if moves != initial:#change has been made, recursion goes now
-        moves=optimizeMoves(moves)
-    
-    #if no change, now go for adding 2s for FF,etc
-    for i in range(len(chars)):
-        cor=chars[i]
-        opp=opps[i]
-        
-        #change FiFi and FF to F2 
-        moves=moves.replace(" {0} {0} ".format(opp), " {0}2 ".format(cor))
-        moves=moves.replace(" {0} {0} ".format(cor), " {0}2 ".format(cor))
-    
-    #trim moves
-    moves=moves.lstrip().rstrip()
-    
-    return moves
+
     
 def solveTheCube(cube):
     '''Solves the scrambled cube.
@@ -78,7 +18,7 @@ def solveTheCube(cube):
     cube.resetMoves()
     
     initial= time.time()
-    
+    cube.updateFaceColors();
     chooseBestSide(cube);
     solveCross(cube)
     solveF2L(cube)
@@ -90,11 +30,12 @@ def solveTheCube(cube):
     with open("time.txt","a") as f:
         f.write("%s\n"%timeTaken)
     print "SOLVED in %0.2f seconds"%(timeTaken)
-
+    
     moves=cube.getMoves()    
     cube.resetMoves()
     cube.boxes=cube.original
     cube.startRecording()
+    
     return moves
     
 def chooseBestSide(cube):
@@ -103,7 +44,7 @@ def chooseBestSide(cube):
 
     print "orienting the cube to %s as base"%str(bestSide)
     orientCube(cube,bestSide)
-    FaceColor.update(cube.getFaceUpdater())
+    cube.updateFaceColors();
     
 def solveCross(cube):
     print "getting base cross"
@@ -118,17 +59,260 @@ def solveF2L(cube):
     print "Solving second level"
     solveSecondLevel(cube)
 def solveOLL(cube):
-    print "Solving OLL cross"
-    solveOllCross(cube)
+    #get the structure of the oll cross.
     
-    print "solving OLL plane"
-    solveOllPlane(cube)
+    #coded from solve-the-cube.com, advanced.html
+    #structuremode
+        #point 
+            #all_corners
+            #line
+                #T
+                #Z
+                #C
+                #bigL
+            #littleL
+                #cross
+                #W
+                #P
+    
+    if cube.OLLsolved(): return
+    top=FaceColor.top    
+    
+    C1=cube.boxAt(0,0,2).xy.color==top.color;
+    C1=C1 and cube.boxAt(2,0,2).xy.color==top.color;
+    C1=C1 and cube.boxAt(0,2,2).xy.color==top.color;
+    C1=C1 and cube.boxAt(2,2,2).xy.color==top.color;
+    
+    if C1:
+        #all corners solved
+        print "CORNER MODE";
+        
+        unsolved_side_pieces=0
+        for box in cube.getSide(TOP_SIDE):
+            if box.getType()=="side_box":
+                if not(box.xy.color==top.color):
+                    unsolved_side_pieces += 1;
+        if unsolved_side_pieces==4:
+            #type(27)
+            cube.action("M' U2 M U2 M' U M U2 M' U2 M");
+            return;
+        C2=cube.boxAt(1,0,2).xy.color==top.color
+        C2= C2 and cube.boxAt(1,2,2).xy.color==top.color
+        if C2:
+            cube.action("U");
+        
+        C3=cube.boxAt(0,1,2).xy.color==top.color
+        C3= C3 and cube.boxAt(2,1,2).xy.color==top.color
+        if C3:
+            cube.action("Li R U Ri Ui L Ri F R Fi");
+        else:
+            #not two opposite side unsolved pieces
+            while not(cube.boxAt(0,1,2).xy.color==top.color and cube.boxAt(1,0,2).xy.color==top.color):
+                cube.action("U");
+            cube.action("Mi Ui M U2 Mi Ui M");
+        return None
+    
+    #check for a line, a horizontal one at the 2nd row
+    if(cube.boxAt(0,1,2).xy.color==top.color and cube.boxAt(2,1,2).xy.color==top.color):
+        cube.action("U");
+    
+    #check for a vertical line
+    if(cube.boxAt(1,0,2).xy.color==top.color and cube.boxAt(1,2,2).xy.color==top.color):
+        if (cube.boxAt(0,1,2).xy.color==top.color and cube.boxAt(2,1,2).xy.color==top.color):#a cross
+            #find how many pieces of corner pieces of OLL are already in place
+            num=0;
+            boxes=cube.getSide(TOP_SIDE);
+            for box in boxes:
+                if box.getType()=="corner_box":
+                    if box.xy.color==top.color:
+                        num += 1;
+            
+            if num==0:
+                #no piece is correct.
+                while not(cube.boxAt(2,0,2).yz.color==top.color):
+                    cube.action("U");
+                
+                if (cube.boxAt(0,0,2).yz.color==top.color and cube.boxAt(2,2,2).yz.color==top.color):
+                    #type(7)
+                    cube.action("R U R' U R U' R' U R U2 R'")
+                else:
+                    #type(6)
+                    if cube.boxAt(0,0,2).yz.color==top.color:
+                        cube.action("U");
+                    
+                    cube.action("L U' R' U L' U R U R' U R");
+            elif num==1:
+                #a sigle piece solved.
+                while not(cube.boxAt(2,0,2).xy.color==top.color):
+                    cube.action("U");
+                if cube.boxAt(0,0,2).yz.color==top.color:
+                    #type(8)
+                    cube.action("R' U2 R U R' U R")
+                    
+                else:
+                    #type is #(9)
+                    cube.action("L' U R U' L U R'")
+            elif num==2:
+                #2 pieces solved
+                while not (cube.boxAt(0,0,2).xy.color==top.color and cube.boxAt(2,0,2).xy.color!=top.color):
+                    cube.action("U");
+                if cube.boxAt(0,2,2).xy.color!=top.color:
+                    while not(cube.boxAt(2,2,2).xz.color==top.color):
+                        cube.action("U");
+                    #type is now #(10)
+                    cube.action("R' F' L' F R F' L F")
+                elif cube.boxAt(2,0,2).yz.color==top.color:
+                    cube.action("U");
+                    #type(11)
+                    cube.action("R2 D R' U2 R D' R' U2 R'")
+                else:
+                    #type(12)
+                    cube.action("R' F' L F R F' L' F");
+            else:
+                print num
+                raise SystemError("invalid cube");
+            return;
+        else:
+            # "no cross";
+            
+            number=0;
+            for box in cube.getSide(TOP_SIDE):
+                if box.getType()=="corner_box":
+                    if box.xy.color==top.color:
+                        number += 1;
+            if number==0:
+                #just a vertical line
+                
+                left_yz_solved_count=0;
+                right_yz_solved_count=0;
+                for box in cube.getSide(TOP_SIDE):
+                    if box.getPos()[0]==0:
+                        if box.yz.color==top.color:
+                            left_yz_solved_count +=1;
+                    elif box.getPos()[0]==2:
+                        if box.yz.color==top.color:
+                            right_yz_solved_count += 1;
+                array=(left_yz_solved_count,right_yz_solved_count);
+                
+                if array==(2,2):
+                    while not(cube.boxAt(0,0,2).xz.color==top.color and cube.boxAt(1,0,2).xz.color==top.color):
+                        cube.action("U");
+                    #"type 15";
+                    cube.action("F U R U' R' U R U' R' F'")
+                elif array==(3,1) or array==(1,3):
+                    if(array==(3,1)):
+                        cube.action("U2");
+                    #"type(14)";
+                    cube.action("R' U' y L' U L' y' L F L' F R");
+                elif array==(3,3):
+                    #"type(13)";
+                    cube.action("R U2 R2 U' R U' R' U2 F R F'");
+                elif array==(1,1):
+                    #"type(16)";
+                    cube.action("U L' B' L U' R' U R U' R' U R L' B L");
+                else:
+                    raise SystemError("invalid_line");                
+            elif number==1:
+                for box in [cube.boxAt(0,0,2),cube.boxAt(0,2,2)]:
+                    if box.xy.color==top.color:
+                        cube.action("U2");
+                        break;
+                if cube.boxAt(2,2,2).xy.color==top.color:
+                    if cube.boxAt(2,0,2).yz.color==top.color:
+                        cube.action("U");
+                        cube.action("R' F R U R' F' R y L U' L'");
+                    elif cube.boxAt(2,0,2).xz.color==top.color:
+                        cube.action("U");
+                        cube.action("L' B' L R' U' R U L' B L");
+                    else:
+                        raise SystemError("unknown Big L");
+                elif cube.boxAt(2,0,2).xy.color==top.color:
+                    if cube.boxAt(0,0,2).yz.color==top.color:
+                        cube.action("U");
+                        cube.action("L F' L' U' L F L' y' R' U R");
+                    elif cube.boxAt(0,0,2).xz.color==top.color:
+                        cube.action("U");
+                        cube.action("R B R' L U L' U' R B' R'");
+                else:
+                    raise SystemError("unknown BigL");
+            elif number==2:
+                box1=None
+                box2=None
+                for box in [cube.boxAt(0,2,2),cube.boxAt(2,2,2),cube.boxAt(2,0,2),cube.boxAt(0,0,2)]:
+                    if box.xy.color==top.color:
+                        if box1:
+                            box2=box
+                            break
+                        else:
+                            box1=box
+                assert(box1 and box2);
+                
+                if box1.pos[0]==box2.pos[0]:
+                    if box1.pos[0]==2:
+                        cube.action("U2");
+                    if cube.boxAt(2,2,2).yz.color==top.color:
+                        cube.action("R U x' R U' R' U x U' R'");
+                    else:
+                        cube.action("Ui");
+                        cube.action("R U R2 U' R' F R U R U' F'");
+                elif box1.pos[1]==box2.pos[1]:
+                    if box1.pos[1]==2:
+                        cube.action("U2");
+                    if cube.boxAt(0,2,2).xz.color==top.color:
+                        cube.action("Ui");
+                        cube.action("F R U R' U' F'");
+                    else:
+                        cube.action("Ui");
+                        cube.action("R U R' U' R' F R F'");
+                else:
+                    if cube.boxAt(2,0,2).xy.color==top.color:
+                        #type like(26)
+                        if not(cube.boxAt(2,2,2).yz.color==top.color and cube.boxAt(2,1,2).yz.color==top.color):
+                            cube.action("U2");
+                        cube.action("Ui");
+                        #type is #26
+                        cube.action("L F' L' U' L U F U' L'");
+                    else:
+                        
+                        if not(cube.boxAt(2,0,2).yz.color==top.color and cube.boxAt(2,1,2).yz.color==top.color):
+                            cube.action("U2");
+                        cube.action("Ui");
+                        #type(25)
+                        cube.action("R' F R U R' U' F' U R");
+            else:
+                raise SystemError("OLL ERROR ");
+        return;
+    
+    number=0
+    for box in cube.getSide(TOP_SIDE):
+        if box.getType()==SIDE_BOX:
+            if box.xy.color==top.color:
+                number += 1
+    if number==3 or number==4:
+        raise SystemError("invalid cross shape on oll")
+    elif number==2:
+        print "little L";
+        from algorithms import smallL_oll
+        try:
+            answer=smallL_oll.getAnswerFor(cube);
+            cube.action(answer);
+        except:
+            raise SystemError("invalid oll in cube");
+        return;
+    else:
+        print "dot";
+        from algorithms import dot_oll
+        answer=dot_oll.getAnswerFor(cube);
+        cube.action(answer);
+        
+    return;
 def solvePLL(cube):
     print "solving PLL centre pieces"
     solvePLLCenterPieces(cube)
     
     print "solving PLL corner pieces"
     solvePLLCornerPieces(cube)
+    
 def getCrossCellsCount(cube,side):
     '''Returns the number of same boxes in the given side, respective to the middle color.'''
     boxes=cube.getSide(side)
@@ -231,104 +415,7 @@ def solvePLLCenterPieces(cube):
         else:
             raise SystemError("PLL ERROR")
 
-def solveOllPlane(cube):
-    '''Solves the oll layer given that the OLL cross is already formed.
-    Is computed before PLL and after F2L.'''
-    answer=""
-    #read the 4 corner pieces
-    pieces=[(0,0,2),(2,0,2),(0,2,2),(2,2,2)]
-    
-    while True:#check if solved
-        boxes=[]
-        for box in cube.boxes:
-            if box.pos in pieces:
-                boxes.append(box);
-            
-        count=0
-        for box in boxes:
-            if box.xy.color==FaceColor.top.color:
-                count += 1
-        if count==4: break
-        
-        #solve if it is just plus, no other cells above
-        if count==0:
-            while True:
-                if cube.boxAt(2,0,2).yz.color==FaceColor.top.color and not(cube.boxAt(0,0,2).xz.color==FaceColor.top.color):
-                    cube.action("R U Ri U R U U Ri")
-                    break
-                else:
-                    cube.action("U")
-            continue
 
-        if count==1: #my best part of OLL. only one piece at top, so bring it to the right-bottom corner
-            
-            while not (cube.boxAt(2,0,2).xy.color==FaceColor.top.color):
-                cube.action("U")
-            
-            if cube.boxAt(0,0,2).xz.color==FaceColor.top.color:
-                #the piece at its left is facing us
-                
-                cube.action("Li U R Ui L U Ri")
-                
-            else:
-                cube.action("Ri U U R U Ri U R")
-                cube.action("R' F' L F R F' L' F")
-            continue#update the count
-        elif count==2:
-            #check if 1 or 2 or 3 from (3rd last)http://www.solve-the-cube.com/advanced
-            #Section(Cross)
-            unmatched=[]
-            for box in boxes:
-                if box.xy.color==FaceColor.top.color:
-                    pass
-                else:
-                    unmatched.append(box)
-            xDiff=abs(unmatched[0].pos[0]-unmatched[1].pos[0])
-            yDiff=abs(unmatched[0].pos[1]-unmatched[1].pos[1])
-            if xDiff+yDiff==4:
-                #condition 2
-                while not(cube.boxAt(0,0,2).yz.color==FaceColor.top.color):
-                    cube.action("U")
-                cube.action("R' F' L' F R F' L F")
-            else:
-                while not (cube.boxAt(2,0,2).xz.color==FaceColor.top.color):
-                    cube.action("U")
-                #check if condition 1 or condition 3
-                if cube.boxAt(0,0,2).xz.color==FaceColor.top.color:
-                    #condition 3
-                    cube.action("R R D R' U U R D' R' U U R'")
-                else:
-                    #condition 1
-                    cube.action("R' F' L F R F' L' F")
-        else:
-            raise SystemError("error. DONOT IGNORE")
-        break
-        
-    return answer
-
-def getOLLCrossShape(cube):
-    '''Returns the current shape if OLL.
-    Given that F2l is complete and all top items are in the top layer.'''
-
-    solved=getCrossCellsCount(cube,TOP_SIDE)
-    if solved==1:
-        return "."
-    elif solved==5:
-        return "+"
-    else:
-        return "- or L"
-        
-def solveOllCross(cube):
-    '''Solves the OLL cross.'''
-    shape=getOLLCrossShape(cube)
-    if shape=="+":
-        return ""
-    if shape==".":
-        cube.action(Algo.getOllPointSolver())
-    elif "-" in shape or "L" in shape:
-        answer=Algo.getOllMinusOrPlusSolver(cube)
-        cube.action(answer)#solves the L in OLL
-        
 def solveSecondLevel(self):
     '''Solves the second layer.
     Given that the base corner pieces are already in their correct position.'''

@@ -85,5 +85,5 @@ class CenterBox(Box):
         self.xy=None
     
 if __name__=="__main__":
-    SideBox()
+    import main
     

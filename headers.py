@@ -4,6 +4,9 @@ from colors import *
 from copy import deepcopy
 from time import sleep
 
+from utilities import *
+
+
 FRONT_SIDE="front"
 BACK_SIDE="back"
 TOP_SIDE="up"

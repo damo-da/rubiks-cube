@@ -43,5 +43,6 @@ def loadCubeFromFile(fileName):
                 if obj:
                     boxes.append(obj)
     return boxes
+
 if __name__=="__main__":
     array=loadCubeFromFile()

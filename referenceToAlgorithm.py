@@ -75,25 +75,6 @@ class Algorithm(object):
 
         return ret
         
-    def getOllPointSolver(self):#solves the cross for a point in oll
-        '''Given that the OLL has a point, returns the answer for solving it.'''
-        ruleID=self.getRulesOfCategory("oll-cross-point")
-        return self.getAnswerForRuleID(ruleID[0])
-    
-    def getOllMinusOrPlusSolver(self,cube):
-        '''Given that the OLL has a minus or a plus, returns the answer for solving it.'''
-        while not(cube.boxAt(2,1,2).xy.color==FaceColor.top.color):
-            cube.action("U")
-        
-        if cube.boxAt(1,0,2).xy.color==FaceColor.top.color:
-            cube.action("Ui")
-        if cube.boxAt(1,2,2).xy.color==FaceColor.top.color:
-            ruleID=self.getRulesOfCategory("oll-cross-L")
-        else:
-            ruleID=self.getRulesOfCategory("oll-cross-minus")
-        
-        return self.getAnswerForRuleID(ruleID[0])
-        
     def getRuleIDfromBoxesBySQL(self,SQL):
         '''Returns an array of ruleIDs of the records of the boxposition table of database as from the SQL argument supplied.'''
         ID=0

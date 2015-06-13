@@ -17,6 +17,8 @@ class Cube(object):
         self.initialFunction=None
         
         self.calledForPause=False;
+    def getFaceColor(self):
+        return FaceColor
     def startRecording(self):
         self.recording=True
     def stopRecording(self):
@@ -29,14 +31,6 @@ class Cube(object):
         self.solved=deepcopy(self.boxes)
         self.resetMoves()
         
-    def randomAlgorithm(self,count=20):
-        '''Generates a random algorithm of length=count.'''
-        chars=["F","Fi","R","Ri","B","Bi","L","Li", "D", "Di","x","xi","M","Mi","y","yi","z","zi","E","Ei","S","Si"] 
-        string=""
-        index=len(chars)-1
-        for i in range(count):
-            string += chars[random.randint(0,index)] + " "
-        return optimizeMoves(string)
     def getMoves(self):
         return optimizeMoves(self.move)
     def initialMovement(self):
@@ -87,8 +81,8 @@ class Cube(object):
         '''Empty moves.'''
         self.move=""
     
-    def getFaceUpdater(self):
-        return {"front":self.boxAt(1,0,1).xz,"left":self.boxAt(0,1,1).yz,"top":self.boxAt(1,1,2).xy}
+    def updateFaceColors(self):
+        FaceColor.update({"front":self.boxAt(1,0,1).xz,"left":self.boxAt(0,1,1).yz,"top":self.boxAt(1,1,2).xy});
     def registerGraphicsHandler(self,g):
         self.gui=g;
     def pauseAction(self):
@@ -99,11 +93,7 @@ class Cube(object):
         return self.calledForPause;
     def action(self,word):
         '''Apply algorithm to the cube.'''
-        word=word.replace("'","i")
-        
-        self.move += word+ " "
-        
-        keys=word.split(" ")
+        keys=split_word(word);
         
         for key in keys:
             if len(key)>1:
@@ -331,7 +321,14 @@ class Cube(object):
             else:
                 print "unknown character : "+key
                 raise SystemError
-                
+            self.move += " "+key+" "
+    def OLLsolved(self):
+        self.updateFaceColors();
+        boxes=self.getSide(TOP_SIDE);
+        for box in boxes:
+            if box.xy.color is not FaceColor.top.color:
+                return False
+        return True;
     def findAll(self,array,color):
         '''Returns all box with color from the array.'''
         ret=[]
@@ -351,9 +348,7 @@ class Cube(object):
                 self.action(key);
                 self.gui.waitForUnpause();
             except:
-                continue;
-        
-        
+                continue;        
     def findAllWithout(self,array,color):
         '''Returns all box without color from the array.'''
         ret=[]
@@ -362,6 +357,7 @@ class Cube(object):
                 if not box.hasColor(color):
                     ret.append(box)
         return ret
+
     def f2lSecondPhaseComplete(self):
         '''Checks if f2l is complete.'''
         C1=self.boxAt(0,0,1).xz.color==FaceColor.front.color and self.boxAt(2,0,1).xz.color==FaceColor.front.color
