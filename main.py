@@ -1,4 +1,3 @@
-
 '''THE LAUNCHER.'''
 
 from headers import *
@@ -9,16 +8,15 @@ from time import sleep
 '''Cube().solve() would return answer for solving the cube:'''
 '''So by rules, Cube().action(Cube.solve()) would be Cube().reset().'''
 
-
 def fun():
-    algo="F U Fi Ui R U Ri Di B D Bi"
+    algo="xi"
     #algo=c.randomAlgorithm(20);
     print algo;
     c.action(algo);
-    answer=c.solve()
-    print "Solved by: "+answer
-    
-    c.action(answer);
+    #answer=c.solve()
+    #print "Solved by: "+answer
+    #print "HI";
+    #c.actionRealTime(answer);
     
     
 c=Cube()

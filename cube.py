@@ -105,16 +105,13 @@ class Cube(object):
         
         keys=word.split(" ")
         
-        
         for key in keys:
             if len(key)>1:
                 key=key[0].upper()+key[1:]
             else:
                 key=key.upper()
             if key=="": continue
-            if self.isActionPaused():
-                self.gui.waitForUnpause();
-                self.unpauseAction();
+            
             if key=='F':
                 rotateFrontSide(self);
                 self.gui.rotateBoxes(self.getSide(FRONT_SIDE),(0,0,1))
@@ -343,6 +340,20 @@ class Cube(object):
                 if box.hasColor(color):
                     ret.append(box)
         return ret
+    def actionRealTime(self,word):
+        '''Solves real time for the user. For each next move, the user presses the space key.'''
+        #if self.isActionPaused():
+        #self.gui.waitForUnpause();
+        #self.unpauseAction();
+        keys=word.split(" ");
+        for key in keys:
+            try:
+                self.action(key);
+                self.gui.waitForUnpause();
+            except:
+                continue;
+        
+        
     def findAllWithout(self,array,color):
         '''Returns all box without color from the array.'''
         ret=[]

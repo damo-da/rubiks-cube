@@ -78,14 +78,14 @@ class GUI(object):
         if not self.rendering: return None
         if not self.cube.recording: return None
         if not angle: angle=pi/2
-        slicedAngle=0.1
+        slicedAngle=0.07
         counts=float(angle)/slicedAngle
         if counts>int(counts): counts=int(counts)+1
         if not reverse:
             slicedAngle=-slicedAngle
         
         for i in range(0,counts+1):
-            rate(40)
+            rate(30)
             if (i==counts):
                 slicedAngle=angle-abs(slicedAngle)*counts
                 if not reverse:
