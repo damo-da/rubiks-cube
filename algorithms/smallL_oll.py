@@ -340,6 +340,6 @@ def getAnswerFor(cube):
             else:
                 raise SystemError("getAnswerFor() at smallL_oll");
         if C1:
-            print "smallL_oll type "+str(algo['type'])
+            print ("smallL_oll type "+str(algo['type']))
             return algo['answer'];
     return SystemError("smallL_oll not found");

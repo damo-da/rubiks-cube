@@ -322,7 +322,7 @@ class Cube(object):
                 rotateS(self)
                 self.gui.rotateBoxes(self.boxes,(0,0,1),reverse=True,angle=pi)
             else:
-                print "unknown character : "+key
+                print ("unknown character : "+key)
                 raise SystemError
             self.move += " "+key+" "
     def OLLsolved(self):

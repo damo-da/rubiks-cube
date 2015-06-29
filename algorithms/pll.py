@@ -254,7 +254,7 @@ def solve(cube):
             #print transitions
             trans=getAlgoForTransition(transitions);
             if trans:
-                print trans['type']
+                print (trans['type'])
                 return trans['answer']
             cube.action("U");
             #break;

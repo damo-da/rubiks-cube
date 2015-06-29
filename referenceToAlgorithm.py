@@ -107,8 +107,8 @@ class Algorithm(object):
         for item in ret:
             if item in ruleID:
                 return self.getAnswerForRuleID(item)
-        print box
-        print "RULE NOT FOUND"
+        print (box)
+        print ("RULE NOT FOUND")
         return None
 
     def getAnswerForRuleID(self,index):

@@ -34,23 +34,23 @@ def getAnswerFor(cube):
         while not(cube.boxAt(2,2,2).xy.color==top.color):
             cube.action("U");
         if cube.boxAt(2,0,2).yz.color==top.color:
-            print "type 31"
+            print ("type 31")
             cube.action("R' U2 x R' U R U' y R' U' R' U R' F yi xi")
         else:
             cube.action("U");
-            print "type 30";
+            print ("type 30");
             cube.action("y L' R2 B R' B L U2 L' B Mi xi")
     elif num==0:
         while not(cube.boxAt(0,0,2).xz.color==top.color and cube.boxAt(2,0,2).xz.color==top.color):
             cube.action("U");
         if cube.boxAt(2,2,2).xz.color==top.color and cube.boxAt(0,2,2).xz.color==top.color:
             cube.action("U");
-            print "type is 28";
+            print ("type is 28");
             cube.action("R U B' M L U L2 M2 x' U' R' F R F'");
         else:
-            print "type is 29";
+            print ("type is 29");
             cube.action("R' F R F' U2 R' F R y' R2 U2 R")
     else:
         #raise SystemError("invalid oll dot");
-        print "different"
+        print ("different")
     return ""

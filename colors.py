@@ -1,6 +1,7 @@
 '''For representing color of the rubik's cube.'''
-from pygame.locals import Color
+# from pygame.locals import Color
 from visual import *
+
 class ColorItem(object):
     '''WHITE,RED,BLUE,etc are all instances of this class.'''
     def __init__(self,name="red"):
@@ -55,6 +56,6 @@ def decodeColorFromText(color):
     elif color.startswith(str(BLUE)): return BLUE
     elif color.startswith(str(ORANGE)): return ORANGE
     return None
-print RED.color
+print (RED.color)
 if __name__=="__main__":
     pass

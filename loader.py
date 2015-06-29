@@ -55,7 +55,7 @@ def loadCubeFromFile(fileName):
                     boxes.append(obj)
     return boxes
 def saveCubeToFile(cube,fileName):
-    print "saving to %s"%fileName
+    print ("saving to %s"%fileName)
     with open(fileName,'w') as f:
         for box in cube.boxes:
             line=encode(box)+"\n";
