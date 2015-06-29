@@ -1,47 +1,20 @@
 Rubik's Cube
 The most famous puzzle of the world.
+--------------------------------
+The app is able to do the following:
+	Solve the rubik's cube game
+	Give the output algorithm for an unsolved Rubik's cube
+	Interactive guide for noobs :>
 
-This app helps you generate the algorithm for solving your rubik's cube.
+Although the generated algorithm may not be the best in the world, I assure you, it is a very good algorighm out there :-)
 
-Usuage:
-	--run main.py
-	--c.action(algorithm) would put algorithm in the cube
-	--c.solve() would produce an alogorithm in the cube
-	--c.action(c.solve()) would solve the cube
+Instructions:
+	-run main.py
+	-c.action(algorithm) would put algorithm in the cube
+	-c.solve() would produce an alogorithm in the cube
+	-c.action(c.solve()) would solve the cube
 
-
-_________________________________________________________________________
-Instruction manual for custom usage of the software.
-
-main.py
-    This is the main script of the software. Here, right in the fun() function, things happen. You may modify the fun() as you like.
-    
-CUBE properties
-
-cube.randomAlgorithm(count) gives a random algorithm of length COUNT.
-
-cube.action(algorithm) takes algorithm and applies it to the cube in a graphical way. To not display the graphics, you may use cube.stopRecording() and cube.startRecording() as shown below;
-normal: cube.action(count);
-to hide the display:
-    cube.stopRecording();
-    cube.action(algorithm);
-    cube.startRecording();
-    
-cube.isSolved() boolean checks whether the cube is solved.
-
-cube.actionRealTime(algorithm) is same as cube.action() but for each move it enters, it requires the user to hit space for next move to make.
-
-cube.reset() resets the cube to its default position.
-
-cube.getMoves() returns all the algorithm made on the cube from the beginning.
-
-cube.resetMoves() resets the move stack in the cube. Hence,
-
-cube.resetMoves()
-cube.getMoves();
-returns an empty string.
-
-cube.f2lSecondPhaseComplete() returns whether f2l is complete on the cube. It DOES NOT check whether the base cross is solved.
-
-cube.solve() returns the algorithm for solving the cube. But it DOES NOT solve the cube. To solve the cube, do 
-cube.action(cube.solve);
+Dependencies:
+	-python2.7
+	-vpython
+	

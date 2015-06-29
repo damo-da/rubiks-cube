@@ -1,4 +1,5 @@
 '''THE LAUNCHER.'''
+from __future__ import print_function,division
 
 from headers import *
 from cube import *
@@ -6,22 +7,21 @@ from graphics import GUI
 from time import sleep
 import sys
 
-
+print("HI");
 def fun():
-
     algo=randomAlgorithm(20);
-    print algo;
+    print(algo)
     
     c.action(algo);
     answer=c.solve()
     #answer="y";
-    print "Solved by: "+answer
+    print ("Solved by: "+answer)
     
-    c.actionRealTime(answer);
+    c.action(answer);
     #c.actionRealTime(answer);
-    print c.isSolved();
-    print "HI";
-    print "End of Program";
+    print (c.isSolved())
+    print ("HI")
+    print ("End of Program")
 c=Cube()
 #c.updateFaceColors();
 graphics=GUI(c)
@@ -36,39 +36,39 @@ if False:
     i=0
     while True:
         if(not c.isSolved()):
-            print "broken at first";
+            print("broken at first");
             break;
         i+=1
-        print "see problems.txt";
-        print "round "+str(i)
+        print ("see problems.txt");
+        print ("round "+str(i))
         algo=randomAlgorithm(50)
-        print algo
+        print (algo)
         c.action(algo);
         try:
             answer=c.solve();
         except:
-            print "error in program";
+            print ("error in program");
             raise SystemError
         c.action(answer)
         if(not c.isSolved()):
-            print FaceColor.top
-            print c.getSide(TOP_SIDE);
-            print "";
+            print (FaceColor.top)
+            print (c.getSide(TOP_SIDE));
+            print ("");
             
-            print FaceColor.bottom
-            print c.getSide(BOTTOM_SIDE);
-            print ""
+            print (FaceColor.bottom)
+            print ( c.getSide(BOTTOM_SIDE) );
+            print ("")
             
-            print FaceColor.left;
-            print c.getSide(LEFT_SIDE);
-            print "";
+            print (FaceColor.left);
+            print (c.getSide(LEFT_SIDE));
+            print ("");
             
-            print FaceColor.right;
-            print c.getSide(RIGHT_SIDE);
-            print "";
-            print "cube is not solved";
+            print (FaceColor.right);
+            print (c.getSide(RIGHT_SIDE));
+            print ("");
+            print ("cube is not solved");
             raise SystemError;
-        print "\n"
+        print ("\n")
     sys.exit();
 else:
     #c.action(randomAlgorithm(50));
