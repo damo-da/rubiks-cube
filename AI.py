@@ -27,7 +27,8 @@ def solveTheCube(cube):
 
 
     #make the cube like a cube with sides.  
-    #IE, if yellow is on the bottom side of the cube, we can actually get yellow from Bottom side. Yay!
+    #IE, if yellow is on the bottom side of the cube, 
+        #we can actually get yellow from Bottom side. Yay!
     cube.updateFaceColors();
 
     #choose the best possible side for solving
@@ -83,7 +84,8 @@ def solveCross(cube):
     '''Solves the base cross.'''
     #we assume that the bottom is the best side to create a cross on
 
-    #bring the bottom-side pieces to wherever bottom-sides, irrespective of where they belong
+    #bring the bottom-side pieces to wherever bottom-sides, 
+        #irrespective of where they belong
     print ("getting base cross")
     bringCrossPiecesInPositon(cube)
     
@@ -172,7 +174,8 @@ def solveOLL(cube):
             #notice that we are assuming that since there is not a line,
                 #there must be two "adjacent" side pieces that have solved top.color
                 #which happens if the cube is actually a working cube
-            while not(cube.boxAt(0,1,2).xy.color==top.color and cube.boxAt(1,0,2).xy.color==top.color):
+            while not(cube.boxAt(0,1,2).xy.color==top.color and 
+                      cube.boxAt(1,0,2).xy.color==top.color):
                 cube.action("U");
 
             # we must be looking like img(64)
@@ -206,12 +209,14 @@ def solveOLL(cube):
             if num==0:
                 #no corner piece==top.color in top face
                 
-                # bring a corner piece to front-right-top corner, so that its right side is top.color ANYHOW
+                # bring a corner piece to front-right-top corner, 
+                    #so that its right side is top.color ANYHOW
                 while not(cube.boxAt(2,0,2).yz.color==top.color):
                     cube.action("U");
                 
 
-                if (cube.boxAt(0,0,2).yz.color==top.color and cube.boxAt(2,2,2).yz.color==top.color):
+                if (cube.boxAt(0,0,2).yz.color==top.color and 
+                    cube.boxAt(2,2,2).yz.color==top.color):
                     #type(7)
                     cube.action("R U R' U R U' R' U R U2 R'")
                 else:
@@ -240,10 +245,11 @@ def solveOLL(cube):
                 #two of the corner box==top.color are in top face
 
                 # make front-left-top.top=top.color and front-right-top.top != top.color.
-                while not (cube.boxAt(0,0,2).xy.color==top.color and cube.boxAt(2,0,2).xy.color!=top.color):
+                while not (cube.boxAt(0,0,2).xy.color==top.color and 
+                           cube.boxAt(2,0,2).xy.color!=top.color):
                     cube.action("U");
 
-                #so that means, that either back-left-top or back-right-top must have top.color in correct place
+                #so now, either back-left-top or back-right-top must have top.color in correct place
                 if cube.boxAt(0,2,2).xy.color!=top.color:
                     #it means, that back-right-top must be managed. 
 
@@ -298,7 +304,8 @@ def solveOLL(cube):
                 
 
                 if array==(2,2):
-                    while not(cube.boxAt(0,0,2).xz.color==top.color and cube.boxAt(1,0,2).xz.color==top.color):
+                    while not(cube.boxAt(0,0,2).xz.color==top.color and 
+                              cube.boxAt(1,0,2).xz.color==top.color):
                         cube.action("U");
 
                     #img(15);
@@ -328,7 +335,8 @@ def solveOLL(cube):
                 #it is a vertical line and one of the corner box is properly oriented
                 #It's a bigL
 
-                #bring the solved piece to right side, but make sure that the vertical line is not destroyed
+                #bring the solved piece to right side, 
+                    #but make sure that the vertical line is not destroyed
                 for box in [cube.boxAt(0,0,2),cube.boxAt(0,2,2)]:
                     if box.xy.color==top.color:
                         cube.action("U2");
@@ -433,7 +441,8 @@ def solveOLL(cube):
                     if cube.boxAt(2,0,2).xy.color==top.color:
 
                         #type like(26)
-                        if not(cube.boxAt(2,2,2).yz.color==top.color and cube.boxAt(2,1,2).yz.color==top.color):
+                        if not(cube.boxAt(2,2,2).yz.color==top.color and 
+                               cube.boxAt(2,1,2).yz.color==top.color):
                             cube.action("U2");
                         cube.action("Ui");
 
@@ -441,7 +450,8 @@ def solveOLL(cube):
                         cube.action("L F' L' U' L U F U' L'");
                     else:
                         #type like img(25)
-                        if not(cube.boxAt(2,0,2).yz.color==top.color and cube.boxAt(2,1,2).yz.color==top.color):
+                        if not(cube.boxAt(2,0,2).yz.color==top.color and 
+                               cube.boxAt(2,1,2).yz.color==top.color):
                             cube.action("U2");
 
                         cube.action("Ui");
@@ -503,7 +513,7 @@ def solvePLL(cube):
     cube.action(answer);
      
 def getBaseCrossBoxesCount(cube):
-    '''Returns the number of boxes correctly placed in the base cross, with respect to the center box.'''
+    '''Returns the number of boxes correctly placed in the base cross.'''
     #including the center box.
 
     #get the boxes
@@ -629,79 +639,125 @@ def solveSecondLevel(cube):
 
 def bringCrossPiecesInPositon(self):
     '''Brings cross pieces of base layer in position.
-    Are flipped correctly too.'''
+    Make them flipped correctly too'''
+    #but we are not flipping 
+
     while True:
+        #find the boxes of base layer.
         boxes=[]
-        for    box in self.boxes:
+        for box in self.boxes:
             if box.hasColor(FaceColor.bottom) and box.getType()==SIDE_BOX:
                 boxes.append(box)
-        
+        #there MUST be 4 sideBoxes in the cube
         assert(len(boxes)==4)
-        #boxes has the 4 white side_piece boxes
-    
+        
+        #the variable to detect whether or not there has been an update in the cube
         update=False
+
+        #foreach box, if it does not lie in the base layer, bring it to the base  layer
         for box in boxes:
             pos=box.pos
+
             if pos[2]==0:
-                #print "base"
+                #already in the base line
                 pass
             elif pos[2]==2:
+                #in the top row
+
                 #bring to (1,0,2)
                 while not self.boxAt(1,0,2).hasColor(FaceColor.bottom):
                     self.action("U")
-                #empty at (1,0,0)
+
+                #empty the cell at at (1,0,0)
                 while self.boxAt(1,0,0).hasColor(FaceColor.bottom):
                     self.action("D")
+
+                #and then bring the box from top to bottom
+
                 self.action("F F")
-                #bring the cube from top to bottom line
+
+                #yeah we made some changes. So, 
                 update=True
+
                 break
             else:
-                update=True
+                #the box lies in second layer
+
                 if box.pos[0]==0 and box.pos[1]==0:
+                    #front-left-side box
                     self.action("F U Fi")
                 elif box.pos[0]==0 and box.pos[1]==2:
+                    #back-left-side box
                     self.action("L U Li")
                 elif box.pos[0]==2 and box.pos[1]==0:
+                    #front-right-side box
                     self.action("R U Ri")
                 elif box.pos[0]==2 and box.pos[1]==2:
+                    #back-right side box
                     self.action("Ri U R")
                 else:
                     raise SystemError("INVALID EXCEPTION")
+                
+                #change the update flag
+                update=True
+
                 break
         
+        #if there has been an update, re-do the loop
         if update: continue
+
+        #now, there should not be an update. 
+        #It means, the boxes are already in the base layer. 
+        #now orient them to the correct side.
+        
+        #get the side_boxes from base layer
         boxes=self.getSide(BOTTOM_SIDE)
-        centers=[]
+        side_boxes=[]
         for item in boxes:
             if item.getType()==SIDE_BOX:
-                centers.append(item)
+                side_boxes.append(item)
         
-        for item in centers:
+        #for each side box,
+        for item in side_boxes:
+            #bring the side box in front-bottom side (1,0,0);
             while not item.pos==(1,0,0):
                 self.action("D")
+
+            #if it does not have correct orientation, apply the algorithm.
             if not(self.boxAt(1,0,0).xy.color==FaceColor.bottom.color):
                 self.action("F Di L")
+        
+        #yeah, we are done now. 
         break
+
+    return;
                                     
 def solveBaseCross(self):
-    '''Solves the side pairs of the cross with their centre pieces.
+    '''Brings the side pieces of the base cross to their respective sides.
     Given that the cross is formed and all the base pieces in the cross are of the same color.'''
     
-    a1=self.boxAt(0,1,0).yz
-    
+    #left-bottom-side box. Match it ANYHOW
     while not self.boxAt(0,1,0).yz.color==FaceColor.left.color:
         self.action("D")
-    # piece 1 solved: FaceColor.left matched
+
+
+    #box 1 solved: FaceColor.left matched
     
-    #front piece
+    #now fix the box at the front side
     if self.boxAt(1,0,0).xz.color==FaceColor.front.color:
+        #already in correct position
         pass
     else:
+        #not in correct position.
+
+        # it can either be at the right or at the back
+
+        #depending on the situation, apply the algorithm
         if self.boxAt(2,1,0).yz.color==FaceColor.front.color:
             self.action("F F U' R R U F F")
         else:
             self.action("F F U' U' B B U U F F")
+    
     #front matched
     
     #right piece
@@ -709,67 +765,87 @@ def solveBaseCross(self):
         pass
     else:
         self.action("R R U' B B U R R")
+
     #the back piece is automatically correct since the others are correct
     return
     
 def bringBaseCornersInPosition(self):
-    '''Brings the base corners in position and also flips them correctly.'''
-    #get the corner pieces with white in them
+    '''Brings the base corners in position and also flips them correctly.
+    Part of F2L code.
+    '''
+    
+    #get all corner boxes of the base layer
     corners=self.findAll(CORNER_PIECES,FaceColor.bottom)
+
+    #there must be four corner boxes of the base layer
     assert(len(corners)==4);
     
-    
-    #piece of (0,0,0) as corner, process it
+
+    #first, we are processing the box of front-bottom-left box
     for corner in corners:
         if corner.hasColor(FaceColor.left,FaceColor.front):
             break
+
     pos=corner.pos
     if pos == (0,0,0):
         #already on place
         pass
     else:
-        
-        #misplaced, bring it to (0,0,2), above the line
-        if pos[2]==0: #lies on another corner
+        #misplaced, bring it to front-top-left, just above its real position
+
+        if pos[2]==0: 
+            #lies on another corner on base layer. 
+                #Find where it lies and apply the proper algorithm
+
             if pos[0]==0:
-                #lies on (0,2,0)
+                #lies on back-bottom-left corner
                 
                 self.action("L U' L' U'")
-                #brings on above the line
             else:
                 #lies on either of the right base corners of the cube
-                if pos[1]==2:#lies on (2,2,0)
+                if pos[1]==2:
+                    #lies on back-bottom-right corner
+
                     self.action("R' U' R U'")
                 else:
-                    #lies on (2,0,0)
+                    #lies on front-bottom-right corner
                     self.action("F' U F U")
+
         else:
+            #since it is not on the bottom layer, it must be on the top layer
+
+            #bring it to front-top-left
             while not self.boxAt(0,0,2).hasColor(FaceColor.left,FaceColor.front,FaceColor.bottom):
                 self.action("U")
-            #came above the line
-            #now send it down
+
+            #it came above the row. Currently at front-top-left
+
+        #now send it down
         self.action("L' U' L")
+
+    #assert whether this box is solved.
     assert(self.boxAt(0,0,0).hasColor(FaceColor.bottom,FaceColor.front,FaceColor.left))
+
     #now flip it to the right orientation
-    while not (self.boxAt(0,0,0).xy.color == FaceColor.bottom.color and self.boxAt(0,0,0).hasColor(FaceColor.front,FaceColor.left)):
+    while not (self.boxAt(0,0,0).xy.color == FaceColor.bottom.color and 
+               self.boxAt(0,0,0).hasColor(FaceColor.front,FaceColor.left)):
         self.action("L' U' L U")
+
     assert(self.boxAt(0,0,0).hasColor(FaceColor.bottom,FaceColor.front,FaceColor.left))
-    #solved of (0,0,0)
+    #solved of front-left-bottom box
     
-    
-    
-    #piece of (0,2,0) as corner, process it
-    
+    #now solve the box of front-right-bottom
     for corner in corners:
         if corner.hasColor(FaceColor.left,FaceColor.back):
-            #print corner.pos
             break
+
     pos=corner.pos
     if pos == (0,2,0):
-        #already on place
+        #already in place
         pass
     else:
-        #misplaced, bring it to (0,2,2), above the line
+        #misplaced, bring it to front-right-top, just above the box
+        
         if pos[2]==0: #lies on either of the corners
             if pos[1]==2:#lies on (2,2,0)
                 self.action("R' U' R")
