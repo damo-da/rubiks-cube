@@ -633,8 +633,8 @@ def solveSecondLevel(cube):
         else:
             for side in sides:
                 if not cube.isSolvedAt(side):
-                    cube= Algo.getAnswerForF2lSecondLineBringBoxToTopTransformation(side)
-                    self.action(answer)
+                    answer= Algo.getAnswerForF2lSecondLineBringBoxToTopTransformation(side)
+                    cube.action(answer)
                 
 
 def bringCrossPiecesInPositon(self):
