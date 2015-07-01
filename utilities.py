@@ -1,29 +1,44 @@
+'''Various utilities for Rubik's cube.'''
+
 import random
 from copy import deepcopy
+from box import Box
+
 def randomAlgorithm(count=20):
-    '''Generates a random algorithm of length=count.'''
+    '''Generates a random algorithm of required length.'''
+
     chars=["F","Fi","R","Ri","B","Bi","L","Li", "D", "Di","x","xi","M","Mi","y","yi","z","zi","E","Ei","S","Si"] 
+
     string=""
     index=len(chars)-1
     for i in range(count):
         string += chars[random.randint(0,index)] + " "
+
     return optimizeMoves(string)
 
 def optimizeMoves(moves):
-    #print moves
+    '''Removes redundancy in algorithms.'''
+
+    #a collection of all possible clockwise and anticlockwise moves
     chars=["F","B","L","R","U","D","X","Y","Z","M","E","S"]
     opps=["Fi",'Bi','Li','Ri','Ui','Di',"Xi","Yi","Zi","Mi","Ei","Si"]
+    
+    #forst convert all F and similar to Fi and similar
     moves=moves.replace("'","i")
-    moves=" "+moves+" " #add space in front and last, so the spaces are not ommited
+
+    #add space in front and last, so the spaces are not ommited
+    moves=" "+moves+" " 
     
     while "  " in  moves:
         moves=moves.replace("  "," ")
         
-    #remove 2s from the text
+    #remove 2s from the text. eg: convert F2 to F F
     if "2" in moves:
         for i in range(len(chars)):
             moves=moves.replace(" {0}2 ".format(chars[i])," {0} {0} ".format(chars[i]))
+
     initial=moves    
+
     for i in range(len(chars)):
         cor=chars[i]
         opp=opps[i]
@@ -58,8 +73,10 @@ def optimizeMoves(moves):
     return moves
 
 def copyCube(boxes):
-    from box import Box
+    '''Creates a clone of the boxes of rubik's cube.'''
+
     ret=[]
+
     for i in range(len(boxes)):
         box=Box(boxes[i].boxType)
         box.xz=deepcopy(boxes[i].xz)
@@ -72,14 +89,23 @@ def copyCube(boxes):
         box.xyBox=boxes[i].xyBox
         ret.append(box)
     return ret
-def split_word(word):
-    word=word.replace("'","i")
-    keys=word.split(" ")
+
+def split_algorithm(word):
+    '''Split an algorithm into an array of single moves.'''
     
+
+    word=word.replace("'","i")
+
+    keys=word.split(" ")
     return keys
-def opposite_of(word):
+
+def opposite_of(algorithm):
+    '''Returns the EXACT opposite of an algorithm.'''
+    #suppose I sent it F D R, it would send me Ri Di Fi
+
     ret=""
-    keys=split_word(word)
+
+    keys=split_algorithm(algorithm)
     keys.reverse()
     for key in keys:
         if "i" ==key[-1]:
@@ -89,4 +115,5 @@ def opposite_of(word):
         else:
             key=key+"i"
         ret += " "+key+" ";
+
     return ret

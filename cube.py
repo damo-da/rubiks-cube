@@ -7,6 +7,7 @@ from rotation import *
 from AI import *
 import random
 from math import pi
+from utilities import *
 
 class Cube(object):
     '''The Cube Class.'''
@@ -94,9 +95,9 @@ class Cube(object):
         self.calledForPause=False;
     def isActionPaused(self):
         return self.calledForPause;
-    def action(self,word):
+    def action(self,algorithm):
         '''Apply algorithm to the cube.'''
-        keys=split_word(word);
+        keys=split_algorithm(algorithm);
         
         for key in keys:
             if len(key)>1:

@@ -1,12 +1,19 @@
-'''For representing color of the rubik's cube.'''
-# from pygame.locals import Color
+'''The colors in the rubik's cube.'''
+
 from visual import *
 
 class ColorItem(object):
-    '''WHITE,RED,BLUE,etc are all instances of this class.'''
-    def __init__(self,name="red"):
+    '''Each specific color.'''
+
+    def __init__(self,name="red",color=color.red):
         self.name=name
-        self.color=color.red
+        self.color=color
+
+        #initially, the opposite of this color is none.
+        #By opposite, I mean,
+        #let's consider a fully solved original rubik's cube.
+        #It has white in the base and yellow in the top.
+        #this opposite property gives us, white.opposite=yellow and vice versa.
         self.opposite=None
         
     def setColor(self,color):
@@ -26,36 +33,38 @@ class ColorItem(object):
         
     def setOpposite(self,opposite):
         self.opposite=opposite
-        opposite.opposite=self
+        
+        if(opposite):
+            opposite.opposite=self
 
-RED=ColorItem("red");
-BLUE=ColorItem("blue");
-GREEN=ColorItem("green");
-ORANGE=ColorItem("orange");
-WHITE=ColorItem("white");
-YELLOW=ColorItem("yellow");
+#yeah, create the instances
+RED=ColorItem("red",color.red);
+BLUE=ColorItem("blue",color.blue);
+GREEN=ColorItem("green",color.green);
+ORANGE=ColorItem("orange",color.orange);
+WHITE=ColorItem("white",color.white);
+YELLOW=ColorItem("yellow",color.yellow);
 
-RED.setColor(color.red)
-GREEN.setColor(color.green)
-YELLOW.setColor(color.yellow)
-BLUE.setColor(color.blue)
-WHITE.setColor(color.white)
-ORANGE.setColor((color.orange))
-
+#set their opposites.
+#note: only 3 are required. The opposite of these 3 are autogerenarated
 RED.setOpposite(ORANGE)
 BLUE.setOpposite(GREEN)
 WHITE.setOpposite(YELLOW)
 
+
 def decodeColorFromText(color):
-    '''Converts text and returns its instance.'''
+    '''Converts text to color and returns its instance.'''
     color=color.lower()
+
+    if(not color): return;
     if color.startswith(str(RED)): return RED
     elif color.startswith(str(GREEN)): return GREEN
     elif color.startswith(str(YELLOW)): return YELLOW
     elif color.startswith(str(WHITE)): return WHITE
     elif color.startswith(str(BLUE)): return BLUE
     elif color.startswith(str(ORANGE)): return ORANGE
-    return None
-print (RED.color)
+    
+    raise SystemError("unknown color: "+color);
+
 if __name__=="__main__":
     pass

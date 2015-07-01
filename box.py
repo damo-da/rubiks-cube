@@ -3,6 +3,7 @@ Cells are also referred as pieces or boxes in this project.
 Coordinates start with 0 and end with 2.
 coordinates are currently calculated with green on front, red on left and white on bottom.
 Currently, (0,0,0) goes for the corner Cell of front-left-bottom.'''
+
 from headers import *
 from colors import *
         
@@ -18,10 +19,13 @@ class Box(object):
         
     def getType(self):
         return self.boxType
+        
     def setPos(self,x,y,z):
         self.pos=(x,y,z)
+
     def getPos(self):
         return self.pos
+
     def getSides(self):
         ret=[]
         if self.xz:

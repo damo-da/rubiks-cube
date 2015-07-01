@@ -206,10 +206,6 @@ def findTransitionsToMake(cube):
             assert(not color == None)
             
             if color.color==FaceColor.left.color:
-                #print "YES";
-                #print box.pos
-                #print box.xz
-                #print FaceColor.left.color
                 transition=[0,1]
             elif color.color==FaceColor.right.color:
                 transition=[2,1]
@@ -219,7 +215,7 @@ def findTransitionsToMake(cube):
                 transition=[1,0]
             else:
                 raise SystemError("while making transition, unknown error 1 happened");
-            #print transition
+            
         else:
             raise SystemError("while making transition, unknown error 2 happened");
         
@@ -250,11 +246,9 @@ def solve(cube):
         while(count<4):
             count += 1;
             transitions=findTransitionsToMake(cube);
-            #print len(transitions);
-            #print transitions
+            
             trans=getAlgoForTransition(transitions);
             if trans:
-                print (trans['type'])
                 return trans['answer']
             cube.action("U");
             #break;
