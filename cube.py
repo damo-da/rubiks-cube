@@ -63,7 +63,7 @@ class Cube(object):
                 return False
         return True
     def getSide(self,side):
-        '''Returns cells of a specific side.'''
+        '''Returns boxes of a specific side.'''
         ret=[]
         a=self.boxes
         for box in self.boxes:

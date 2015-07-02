@@ -37,13 +37,11 @@ def solveTheCube(cube):
     #choose the best possible side for solving
     chooseBestSide(cube);
 
-    #solve the base cross
     solveCross(cube)
-
     solveF2L(cube)
-
     solveOLL(cube)
     solvePLL(cube)
+
     #by now, the cube should be solved
 
     #calculate and print the total time elapsed
@@ -671,7 +669,7 @@ def bringCrossBoxesInPositon(self):
                 while not self.boxAt(1,0,2).hasColor(FaceColor.bottom):
                     self.action("U")
 
-                #empty the cell at at (1,0,0)
+                #empty the box at at (1,0,0)
                 while self.boxAt(1,0,0).hasColor(FaceColor.bottom):
                     self.action("D")
 

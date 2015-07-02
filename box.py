@@ -1,8 +1,7 @@
 '''The class for the boxes of the cube.
-Cells are also referred as boxes in this project.
 Coordinates start with 0 and end with 2.
 coordinates are currently calculated with green on front, red on left and white on bottom.
-Currently, (0,0,0) goes for the corner Cell of front-left-bottom.'''
+box of position (0,0,0) goes for the corner box of front-left-bottom.'''
 
 from headers import *
 from colors import *
