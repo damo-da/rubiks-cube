@@ -87,10 +87,10 @@ def solveCross(cube):
     '''Solves the base cross.'''
     #we assume that the bottom is the best side to create a cross on
 
-    #bring the bottom-side pieces to wherever bottom-sides, 
+    #bring the bottom-side boxes to wherever bottom-sides, 
         #irrespective of where they belong
     print ("getting base cross")
-    bringCrossPiecesInPositon(cube)
+    bringCrossBoxesInPositon(cube)
     
     print ("matching them with their respective sides")
     solveBaseCross(cube)
@@ -100,7 +100,7 @@ def solveF2L(cube):
     #we assume that the base cross is solved
 
     #solve the first layer
-    print ("getting the base corner pieces in position")
+    print ("getting the base corner boxes in position")
     bringBaseCornersInPosition(cube)
     
     #and then the second layer
@@ -140,14 +140,14 @@ def solveOLL(cube):
     if C1:
         #all corners solved
 
-        #count how many of the side pieces in the top row are solved.
-        solved_side_pieces=0
+        #count how many of the side boxes in the top row are solved.
+        solved_side_boxes=0
         for box in cube.getSide(TOP_SIDE):
             if box.getType()=="side_box":
                 if not(box.xy.color==top.color):
-                    solved_side_pieces += 1;
+                    solved_side_boxes += 1;
 
-        if solved_side_pieces==4:
+        if solved_side_boxes==4:
             #img(27)
             cube.action("M' U2 M U2 M' U M U2 M' U2 M");
             return;
@@ -170,12 +170,12 @@ def solveOLL(cube):
             cube.action("Li R U Ri Ui L Ri F R Fi");
             return;
         else:
-            #not two opposite side unsolved pieces
+            #not two opposite side unsolved boxes
             #ie, there is no line in the side-row(the middle row)
 
-            #now bring solved pieces to front-top-side piece and to left-top-side piece.
+            #now bring solved boxes to front-top-side box and to left-top-side box.
             #notice that we are assuming that since there is not a line,
-                #there must be two "adjacent" side pieces that have solved top.color
+                #there must be two "adjacent" side boxes that have solved top.color
                 #which happens if the cube is actually a working cube
             while not(cube.boxAt(0,1,2).xy.color==top.color and 
                       cube.boxAt(1,0,2).xy.color==top.color):
@@ -201,7 +201,7 @@ def solveOLL(cube):
         if (cube.boxAt(0,1,2).xy.color==top.color and cube.boxAt(2,1,2).xy.color==top.color):
             # yes, a cross
 
-            #find how many pieces of corner boxes of OLL are already in place
+            #find how many boxes of corner boxes of OLL are already in place
             num=0;
             boxes=cube.getSide(TOP_SIDE);
             for box in boxes:
@@ -210,9 +210,9 @@ def solveOLL(cube):
                         num += 1;
 
             if num==0:
-                #no corner piece==top.color in top face
+                #no corner box==top.color in top face
                 
-                # bring a corner piece to front-right-top corner, 
+                # bring a corner box to front-right-top corner, 
                     #so that its right side is top.color ANYHOW
                 while not(cube.boxAt(2,0,2).yz.color==top.color):
                     cube.action("U");
@@ -338,7 +338,7 @@ def solveOLL(cube):
                 #it is a vertical line and one of the corner box is properly oriented
                 #It's a bigL
 
-                #bring the solved piece to right side, 
+                #bring the solved box to right side, 
                     #but make sure that the vertical line is not destroyed
                 for box in [cube.boxAt(0,0,2),cube.boxAt(0,2,2)]:
                     if box.xy.color==top.color:
@@ -477,7 +477,7 @@ def solveOLL(cube):
 
     if number==3 or number==4 or number==1:
         #how could it be? we already declared that there ain't no cross!
-        #Similarly, how could there be 1 or 3 correctly oriented side pieces on OLL? o.O
+        #Similarly, how could there be 1 or 3 correctly oriented side boxes on OLL? o.O
         raise SystemError("invalid cross shape on oll")
 
     elif number==2:
@@ -527,7 +527,7 @@ def getBaseCrossBoxesCount(cube):
         if box.pos[0]==1 and box.pos[1]==1:
             color=box.xy
             
-    count=0 #count of the number of boxes in cross including the middle piece
+    count=0 #count of the number of boxes in cross including the middle box
 
     #now count the boxes of the cross that match to their boss(centre)
     for box in boxes:
@@ -559,7 +559,7 @@ def chooseBestSolvedSide(cube):
         if item['count']>highest['count']:
             highest=item;
 
-    # return the side with highest number of cross pieces properly oriented
+    # return the side with highest number of cross boxes properly oriented
     return highest['color'];
     
 def orientCube(cube,side):
@@ -580,16 +580,16 @@ def orientCube(cube,side):
 
 def solveSecondLevel(cube):
     '''Solves the second layer. [part of F2l].
-    Given that the base corner pieces are already in their correct position.'''
+    Given that the base corner boxes are already in their correct position.'''
 
     #positions that can hold side-boxes of the second layer
     #the side positions of second and third row
-    piecesThatCanHold=[(0,0,1),(0,2,1),(2,0,1),(2,2,1),(1,0,2),(1,2,2),(0,1,2),(2,1,2)]
+    boxesThatCanHold=[(0,0,1),(0,2,1),(2,0,1),(2,2,1),(1,0,2),(1,2,2),(0,1,2),(2,1,2)]
 
     #the sides that the boxes need to be placed on.
     sides=[(0,0,1),(0,2,1),(2,0,1),(2,2,1)]
 
-    #So, basically, what we are doing are bring cubes located in piecesThatCanHold to sides
+    #So, basically, what we are doing are bring cubes located in boxesThatCanHold to sides
 
 
     #rule here:
@@ -602,10 +602,10 @@ def solveSecondLevel(cube):
     while True:
         #get boxes that do not have a FaceColor.top side. 
         #it means, that these boxes are of the middle layer
-        boxes=cube.findAllWithout(piecesThatCanHold,FaceColor.top)
+        boxes=cube.findAllWithout(boxesThatCanHold,FaceColor.top)
         assert(len(boxes)==4);
 
-        #for each piece, 
+        #for each box, 
         i=0
         while i < 4:
             box=boxes[i]
@@ -626,7 +626,7 @@ def solveSecondLevel(cube):
             
             #since the cube is rotated, the boxes we found initially, are messed up.
             #we need to find them again.
-            boxes=cube.findAllWithout(piecesThatCanHold,FaceColor.top)
+            boxes=cube.findAllWithout(boxesThatCanHold,FaceColor.top)
             
             #and then, we need to restart the process from scratch :-\
             i=0
@@ -640,8 +640,8 @@ def solveSecondLevel(cube):
                     cube.action(answer)
                 
 
-def bringCrossPiecesInPositon(self):
-    '''Brings cross pieces of base layer in position.
+def bringCrossBoxesInPositon(self):
+    '''Brings cross boxes of base layer in position.
     Make them flipped correctly too'''
     #but we are not flipping 
 
@@ -736,8 +736,8 @@ def bringCrossPiecesInPositon(self):
     return;
                                     
 def solveBaseCross(self):
-    '''Brings the side pieces of the base cross to their respective sides.
-    Given that the cross is formed and all the base pieces in the cross are of the same color.'''
+    '''Brings the side boxes of the base cross to their respective sides.
+    Given that the cross is formed and all the base boxes in the cross are of the same color.'''
     
     #left-bottom-side box. Match it ANYHOW
     while not self.boxAt(0,1,0).yz.color==FaceColor.left.color:
@@ -763,13 +763,13 @@ def solveBaseCross(self):
     
     #front matched
     
-    #right piece
+    #right box
     if self.boxAt(2,1,0).yz.color==FaceColor.right.color:
         pass
     else:
         self.action("R R U' B B U R R")
 
-    #the back piece is automatically correct since the others are correct
+    #the back box is automatically correct since the others are correct
     return
     
 def bringBaseCornersInPosition(self):
@@ -778,7 +778,7 @@ def bringBaseCornersInPosition(self):
     '''
     
     #get all corner boxes of the base layer
-    corners=self.findAll(CORNER_PIECES,FaceColor.bottom)
+    corners=self.findAll(CORNER_BOXES,FaceColor.bottom)
 
     #there must be four corner boxes of the base layer
     assert(len(corners)==4);
@@ -873,7 +873,7 @@ def bringBaseCornersInPosition(self):
     for corner in corners:
         if corner.hasColor(FaceColor.right,FaceColor.back):
             break
-    #piece of (2,2,0) as corner, process it
+    #box of (2,2,0) as corner, process it
     pos=corner.pos
     if pos == (2,2,0):
         #already on place
@@ -899,7 +899,7 @@ def bringBaseCornersInPosition(self):
     for corner in corners:
         if corner.hasColor(FaceColor.right,FaceColor.front):
             break
-    #piece of (2,0,0) as corner, process it
+    #box of (2,0,0) as corner, process it
     pos=corner.pos
     
     if pos==(2,0,0):

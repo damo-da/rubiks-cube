@@ -5,7 +5,7 @@
 #empty lines do not consider
 
 
-#Corner pieces
+#Corner boxes
 0,0,0,corner,green,red,white,
 0,0,2,corner,green,red,yellow,
 2,0,0,corner,green,orange,white,
@@ -17,7 +17,7 @@
 
 
 
-#side pieces
+#side boxes
 0,0,1,side,green,red,,
 0,2,1,side,blue,red,,
 2,0,1,side,green,orange,,
@@ -34,7 +34,7 @@
 2,1,2,side,,orange,yellow,
 
 
-#center pieces
+#center boxes
 1,0,1,center,green,,,
 1,2,1,center,blue,,,
 2,1,1,center,,orange,,

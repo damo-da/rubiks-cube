@@ -42,7 +42,7 @@ class Cube(object):
             self.initialFunction()
     def isSolvedAt(self,pos):
         '''Check if a pos has its native colors, flipped properly.'''
-        #get the centre piece of box adjacent sides
+        #get the centre box of box adjacent sides
         if pos[0]==0:
             if not self.boxAt(*pos).yz.color==self.boxAt(0,1,1).yz.color: return False
         elif pos[0]==2:
