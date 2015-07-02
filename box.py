@@ -4,7 +4,7 @@ coordinates are currently calculated with green on front, red on left and white 
 box of position (0,0,0) goes for the corner box of front-left-bottom.'''
 
 from headers import *
-from colors import *
+from headers import CORNER_BOX
         
 class Box(object):
     '''The base class for boxes.'''

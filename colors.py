@@ -1,6 +1,6 @@
 '''The colors in the rubik's cube.'''
 
-from visual import *
+from visual import color
 
 class ColorItem(object):
     '''Each specific color.'''

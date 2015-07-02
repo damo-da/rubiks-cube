@@ -1,8 +1,7 @@
 '''Various utilities for Rubik's cube.'''
 
-import random
+from random import randint
 from copy import deepcopy
-from box import Box
 
 def randomAlgorithm(count=20):
     '''Generates a random algorithm of required length.'''
@@ -12,7 +11,7 @@ def randomAlgorithm(count=20):
     string=""
     index=len(chars)-1
     for i in range(count):
-        string += chars[random.randint(0,index)] + " "
+        string += chars[randint(0,index)] + " "
 
     return optimizeMoves(string)
 
@@ -74,6 +73,7 @@ def optimizeMoves(moves):
 
 def copyCube(boxes):
     '''Creates a clone of the boxes of rubik's cube.'''
+    from box import Box
 
     ret=[]
 
@@ -90,13 +90,12 @@ def copyCube(boxes):
         ret.append(box)
     return ret
 
-def split_algorithm(word):
+def split_algorithm(keys):
     '''Split an algorithm into an array of single moves.'''
     
+    keys=keys.replace("'","i")
 
-    word=word.replace("'","i")
-
-    keys=word.split(" ")
+    keys=keys.split(" ")
     return keys
 
 def opposite_of(algorithm):
@@ -117,3 +116,31 @@ def opposite_of(algorithm):
         ret += " "+key+" ";
 
     return ret
+
+
+def getIdFromPos(pos):
+    '''Get id of box from pos.'''
+    #every position in box has an ID and vice versa. ID can be decoded to position and vice versa
+
+    box_id=pos[0]+pos[1]*3+pos[2]*9
+
+    return box_id
+    
+def getPosFromId(box_id):
+    '''Get position of box from its Id.'''
+    #opposite of getIDFromPos(pos).
+
+    pos=[0,0,0]
+
+    while box_id>8:
+        pos[2] += 1
+        box_id -= 9
+
+    while box_id>2:
+        pos[1] += 1
+        box_id -= 3
+
+    pos[0]=box_id
+
+    return (pos[0],pos[1],pos[2])
+

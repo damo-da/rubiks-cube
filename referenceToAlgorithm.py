@@ -2,12 +2,15 @@
 
 from headers import *
 from sqlite3 import dbapi2 as sqlite
+from box import Box
 
 class Algorithm(object):
     '''The class for the linker.'''
+
     def open(self):
         '''Opens the database'''
         self.db=DBhandler()
+        
     def __init__(self):
         self.open()
 
@@ -107,9 +110,10 @@ class Algorithm(object):
         for item in ret:
             if item in ruleID:
                 return self.getAnswerForRuleID(item)
-        print (box)
+        
         print ("RULE NOT FOUND")
-        return None
+        raise SystemError("F2l Rule not found");
+        
 
     def getAnswerForRuleID(self,index):
         '''Returns answer for the ruleid from the rule table of database.'''

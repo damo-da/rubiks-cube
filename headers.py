@@ -1,9 +1,11 @@
 '''The global settings for the project.'''
 
-from colors import *
+from colors import RED,BLUE,GREEN,WHITE,YELLOW,ORANGE
+from colors import decodeColorFromText
 from copy import deepcopy
 from time import sleep
-
+from utilities import getIdFromPos
+from utilities import getPosFromId
 
 #some globak constants declared
 FRONT_SIDE="front"
@@ -17,7 +19,6 @@ CORNER_BOX='corner_box'
 CENTER_BOX='center_box'
 SIDE_BOX='side_box'
 
-
 #where boxes can lie
 CORNER_BOXES=[(0,0,0),(0,0,2),(0,2,0),(0,2,2),(2,0,0),(2,0,2),(2,2,0),(2,2,2)]
 
@@ -26,38 +27,12 @@ SIDE_BOXES=   [(0,0,1),(0,2,1),(2,0,1),(2,2,1),
                 (0,1,0),(0,1,2),(2,1,0),(2,1,2)]
 CENTER_BOXES=[(1,0,1),(1,2,1),(2,1,1),(0,1,1),(1,1,0),(1,1,2)]
 
-def getIdFromPos(pos):
-    '''Get id of box from pos.'''
-    #every position in box has an ID and vice versa. ID can be decoded to position and vice versa
-
-    box_id=pos[0]+pos[1]*3+pos[2]*9
-
-    return box_id
-    
-def getPosFromId(box_id):
-    '''Get position of box from its Id.'''
-    #opposite of getIDFromPos(pos).
-
-    pos=[0,0,0]
-
-    while box_id>8:
-        pos[2] += 1
-        box_id -= 9
-
-    while box_id>2:
-        pos[1] += 1
-        box_id -= 3
-
-    pos[0]=box_id
-
-    return (pos[0],pos[1],pos[2])
-
 
 class FaceObject(object):
     '''The object to convert face into respective colors.
 
     If I want to know what color lies at the centre of bottom of cube, 
-        it becomes easier to call this funcction.
+        it becomes easier to call this function.
     '''
 
     def __init__(self):

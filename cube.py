@@ -1,7 +1,7 @@
 '''The class for the cube.'''
 
-from box import *
 from headers import *
+from box import *
 from loader import loadCubeFromFile,saveCubeToFile
 from rotation import *
 from AI import *

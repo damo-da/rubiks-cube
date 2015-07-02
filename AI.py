@@ -11,8 +11,6 @@ from utilities import *
 #our Algorithm handler
 Algo=Algorithm()
 
-
-
 def solveTheCube(cube):
     '''Returns the algorithm for solving the cube.'''
 
@@ -25,9 +23,7 @@ def solveTheCube(cube):
     #now, we are gonna set the move log in the cube to be empty
     cube.resetMoves()
 
-
     initial_time= time.time()
-
 
     #make the cube like a cube with sides.  
     #IE, if yellow is on the bottom side of the cube, 

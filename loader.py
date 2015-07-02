@@ -1,4 +1,5 @@
 '''This file helps to load a cube from a file'''
+
 from headers import *
 from box import *
 from colors import decodeColorFromText
