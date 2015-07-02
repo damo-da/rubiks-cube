@@ -53,4 +53,5 @@ def getAnswerFor(cube):
     else:
         #raise SystemError("invalid oll dot");
         # different
+        pass
     return ""

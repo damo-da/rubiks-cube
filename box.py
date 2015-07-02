@@ -12,6 +12,8 @@ class Box(object):
         self.pos=(0,0,0)
         self.boxType=boxType
 
+        #these are the "boxes" of the graphics library. 
+        #The cube does not mess up with them.
         self.xzBox=None
         self.xyBox=None
         self.yzBox=None
@@ -26,6 +28,10 @@ class Box(object):
         return self.pos
 
     def getSides(self):
+        # returns all of the sides of box that are not None. 
+        # ie, sides that have colour
+        # a corner box would return three sides, a side box would return two
+
         ret=[]
         if self.xz:
             ret.append(self.xz)
@@ -34,11 +40,21 @@ class Box(object):
         if self.xy:
             ret.append(self.xy)
         return ret
+
     def __str__(self):
         return repr(self)
+
     def __repr__(self):
-        return "%s at "%(self.boxType)+str(self.pos)+" , xz= "+str(self.xz)+" , yz= "+str(self.yz)+" , xy= "+str(self.xy)+"\n"
+        return "%s at %s , xz= %s , yz= %s , xy= %s "%(
+            self.boxType,
+            self.pos,
+            self.xz,
+            self.yz,
+            self.xy)
+
     def hasColor(self,*colors):
+        #returns true if the box has each color in colors
+
         ret=True
         for color in colors:
             colorFound=False
@@ -57,9 +73,12 @@ class Box(object):
         return False
         
 class CornerBox(Box):
-    '''A corner box. has 3 faces.'''
+    '''A corner box of Rubik's cube.
+    
+    A corner box has three faces. Its xz, xy and yz are ALWAYS not None, no matter what.'''
+
     def __init__(self):
-        Box.__init__(self,CORNER_BOX)
+        Box.__init__(self,CORNER_BOX);
         
         self.xy=FaceColor.bottom        #the colors of the box
         self.yz=FaceColor.left
@@ -68,10 +87,17 @@ class CornerBox(Box):
         self.pos=(0,0,0)
         
 class SideBox(Box):
-    '''A side box. has 2 faces.'''
+    '''A side box of Rubik's cube.
+    
+    Note: the naming of SideBox may be inappropriate. But, to understand, it is the box between
+    two corner boxes.
+
+    A side box has three faces. One of it's xy, xz or yz is ALWAYS None.'''
+
     def __init__(self):
         Box.__init__(self,SIDE_BOX)
         
+        #some random default values
         self.xy=None
         self.yz=FaceColor.left
         self.xz=FaceColor.front
@@ -79,10 +105,13 @@ class SideBox(Box):
         self.pos=(0,0,1)
         
 class CenterBox(Box):
-    '''A center box. has 1 face.'''
+    '''A center box of Rubik's cube.
+    
+    A center box has three faces. Two of it's xy, xz or yz are ALWAYS None.'''
     def __init__(self):
         Box.__init__(self,CENTER_BOX)
         
+        #some random default values
         self.xz=FaceColor.front
         self.yz=None
         self.xy=None

@@ -203,7 +203,7 @@ def solveOLL(cube):
             num=0;
             boxes=cube.getSide(TOP_SIDE);
             for box in boxes:
-                if box.getType()=="corner_box":
+                if box.getType()==CORNER_BOX:
                     if box.xy.color==top.color:
                         num += 1;
 
@@ -282,7 +282,7 @@ def solveOLL(cube):
             #count the number of corner boxes solved correctly oriented
             number=0;
             for box in cube.getSide(TOP_SIDE):
-                if box.getType()=="corner_box":
+                if box.getType()==CORNER_BOX:
                     if box.xy.color==top.color:
                         number += 1;
 
