@@ -1,6 +1,12 @@
-Rubik's Cube
+# Rubik's Cube
 The most famous puzzle of the world.
---------------------------------
+
+## Installation
+* Python 2
+* VPython
+* pygame (Install using `pip install pygame`)
+
+## Capabilities
 The app is able to do the following:
 	Solve the rubik's cube game
 	Give the output algorithm for an unsolved Rubik's cube
@@ -8,13 +14,8 @@ The app is able to do the following:
 
 Although the generated algorithm may not be the best in the world, I assure you, it is a very good algorighm out there :-)
 
-Instructions:
+## Instructions:
 	-run main.py
 	-c.action(algorithm) would put algorithm in the cube
 	-c.solve() would produce an alogorithm in the cube
 	-c.action(c.solve()) would solve the cube
-
-Dependencies:
-	-python2.7
-	-vpython
-	
