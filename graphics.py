@@ -15,7 +15,7 @@ _GRAPHICS=None;
 _PAUSED=visual.text(text='-',pos=(0,2,0),align="center", depth=-0.3, color=color.red)
 _PAUSED.visible=False;
 _FPS=70
-print "damodar";
+
 class GUI(object):
     def stopAction(self,event):
 	#if space  pressed, 
