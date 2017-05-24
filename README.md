@@ -1,6 +1,8 @@
 # Rubik's Cube
 The most famous puzzle of the world.
 
+![Animated GIF](/animation.gif)
+
 ## Installation
 * Python 2
 * VPython
